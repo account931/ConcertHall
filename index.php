@@ -45,7 +45,7 @@ session_start();
 
 
        <div id="headX" class="jumbotron text-center gradient alert-success my-background head-style" style =' background-color:lavender ;'> <!--#2ba6cb;-->
-         <h1 id="h1Text"> <span id="textChange"> myConcert on-line</span> <i class="fa fa fa-bank" style="font-size:48px;color:"></i><!--</span> <img src="http://78.media.tumblr.com/tumblr_m2hq5tt3ma1qav3uso1_400.gif" style="width:3%"/>--> </h1> 
+         <h1 id="h1Text"> <span id="textChange"> myConcert on-line</span> <i class="fa fa-battery-4" style="font-size:48px;color:"></i><!--</span> <img src="http://78.media.tumblr.com/tumblr_m2hq5tt3ma1qav3uso1_400.gif" style="width:3%"/>--> </h1> 
 		   
            <!--<p class="header_p">QR Codes on-line processor   <span class="glyphicon glyphicon-duplicate"></span>-->    <!--generates random lists, ramdomizes integers, etc-->
            </p>
@@ -66,36 +66,56 @@ session_start();
 			     
 					 
 			  
-			         <!-------------- GENERATE Hall seats------------->	
+			         <!-------------- FORM to GENERATE Hall seats------------->	
 			         <!-- Each div should have id = checkboxID + "Div",  to automate it in js_controls.js -->
 		             <div class="col-sm-4 col-xs-12 my-background coreDivs-toHide head-style" style="background-color:lavender;" id="qrGenerateDiv" >
 		                 <!-------------- GENERATE Hall seats Start------------->	
                          <form action="" id="myFormZ" method="post">
 						 
                              <div class="form-group">
-                                  <label for="vertcRows">Number of V Rows: <span class="glyphicon glyphicon-transfer"></span></label>
-                                  <input type="text" class="form-control" id="vertcRows" name="">
+                                  <label for="vertcRows">Number of V Rows: <span class="glyphicon glyphicon glyphicon-sort"></span></label>
+                                  <input type="number" class="form-control" id="vertcRows" name="" required>
                              </div>
 							 
 							  <div class="form-group">
                                   <label for="seatsInRows">Number of  H Seats in Row: <span class="glyphicon glyphicon-transfer"></span></label>
-                                  <input type="text" class="form-control" id="seatsInRows" name="">
+								  <span class="error_req"> * </span> <span class="sp"  id =""> </span>
+                                  <input type="text" class="form-control checkRegExp" id="seatsInRows" name="" required>
                              </div>
 					
                             <button type="button" class="btn btn-default" id="createHall">Create</button>
 				            <button type="button" class="btn btn-default" id="clear">Clear</button>
                         </form>				   
-                        <!---------------- END GENERATE  GENERATE Hall seats -------->				   
+                        <!---------------- END Form to GENERATE  GENERATE Hall seats -------->				   
 				  
 			         </div> <!--END <div class="col-sm-4" style="background-color:lavender;">-->
 				     <!--</div>--> <!--"row">-->			 	 
+					 
+					 
+					  <div class="col-sm-1 col-xs-12 my-background ">
+					  </div>
+					 
+				     <!---------------- Div with DatePicker -------->	
+				     <div class="col-sm-4 col-xs-12 my-background coreDivs-toHide head-style"  id="datePicker" >
+					     <div class="form-group">
+                              <label for="dateHistorical">Select date </label>
+				              <input type="date" name="" id="dateHistorical" class="date"> 
+							   <input id ="getDateEvent" type="button" class="btn btn-default" value="Get">
+						  </div>
+						 
+					 </div>
+				     <!---------------- Div with DatePicker -------->
+					 
 					 
 				 
 				   </div>  <!-- END class="row row1"> here, to make sure QR img appears on the same line in desktop-->
 				 
 				 
 				 
-				    <!--------- HALL Seats -------->
+				 
+				 
+				 
+				    <!--------- HALL Seats PLAN-------->
 				    <br>
 				    <div class="col-sm-12 col-xs-12 head-style" id="status">    
 				    </div>
@@ -131,6 +151,53 @@ session_start();
 			      <!-----------------  Button to change Style theme------------------------->
 	              <input type="button" class="btn" value=">>" id="changeStyle" style="position:absolute;top:0px;left:0px;" title="click to change theme"/>
 	              <!-----------------  Button to change Style theme------------------------->
+				  
+				  
+				  
+				  
+				  <!-----------------  Modal window with info------------------------------>
+      <div id="myModalZ" class="modal fade" role="dialog">
+          <div class="modal-dialog">
+          <!-- Modal content-->
+              <div class="modal-content">
+                  <div class="modal-header">
+                       <button type="button" class="close" data-dismiss="modal">&times;</button>
+                       <h4 class="modal-title">Buy a ticket </h4>
+                  </div>
+                  <div class="modal-body">
+				      <center>
+				      <img src="images/buy.jpg" alt="img"/><br><br><br> 
+                      <p>
+					     	<label for="formUserName">Your Name:</label>
+                            <input type="text" class="form-control" id="formUserName" required>
+							<br>
+							<label for="formTicketDate">Ticket Date:</label>
+                            <input type="text" class="form-control" id="formTicketDate">
+							<br>
+		                    <label for="formTicketPlace">Ticket Place:</label>
+                            <input type="text" class="form-control" id="formTicketPlace">
+							<br>
+		                    <label for="formTicketID">Ticket ID:</label>
+                            <input type="text" class="form-control" id="formTicketID"> 
+							<br>
+		                    <label for="formTicketID">Price:</label>
+                            <input type="text" class="form-control" id="formTicketPrice" value="15 EURO"> 
+							<br>
+					  </p>
+					  </center>
+                  </div>
+                  <div class="modal-footer">
+				       <button type="button" class="btn btn-default" data-dismiss="modal" id="agreedAddToSQL">Buy</button>
+                       <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  </div>
+              </div>
+
+         </div>
+     </div>
+      <!-----------------  END Modal window with info---------------------------->
+				  
+				  
+				  
 				  
 				  
 				  
