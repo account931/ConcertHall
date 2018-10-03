@@ -1,5 +1,9 @@
 <?php
-session_start();
+//session_start();
+include 'Classes/autoload.php';//uses autoload instead of manual includin each class->
+$testEventForeveryDay = new Auto_Add_Event_Every_Day();
+$testEventForeveryDay->addTestEvent();
+
 ?>
 
 <!doctype html>
@@ -112,14 +116,20 @@ session_start();
 				 
 				 
 				 
+				    <!--------- HALL Info (name, amount of seats)-------->
+				    <br>
+				    <div class="col-sm-12 col-xs-12 head-style" id="hallInfo">    
+				    </div>
+				    <!--------- HALL Info (name, amount of seats) -------->
 				 
 				 
 				 
-				    <!--------- HALL Seats PLAN-------->
+				 
+				    <!---------------- HALL Seats Plan Scheme --------------->
 				    <br>
 				    <div class="col-sm-12 col-xs-12 head-style" id="status">    
 				    </div>
-				    <!--------- END  HALL Seats -------->
+				    <!--------------- END  HALL Seats Plan Scheme ------------------>
 				 
 				  
 				  
@@ -166,28 +176,31 @@ session_start();
                   </div>
                   <div class="modal-body">
 				      <center>
-				      <img src="images/buy.jpg" alt="img"/><br><br><br> 
+				      <img src="images/buy.jpg" alt="img"/><br> 
                       <p>
 					     	<label for="formUserName">Your Name:</label>
-                            <input type="text" class="form-control" id="formUserName" required>
+                            <input type="text" class="form-control inputZ" id="formUserName" required>
 							<br>
 							<label for="formTicketDate">Ticket Date:</label>
-                            <input type="text" class="form-control" id="formTicketDate">
+                            <input type="text" class="form-control inputZ" id="formTicketDate">
+							<br>
+							<label for="formEvent">Event:</label>
+                            <input type="text" class="form-control inputZ" id="formEvent">
 							<br>
 		                    <label for="formTicketPlace">Ticket Place:</label>
-                            <input type="text" class="form-control" id="formTicketPlace">
+                            <input type="text" class="form-control inputZ" id="formTicketPlace">
 							<br>
 		                    <label for="formTicketID">Ticket ID:</label>
-                            <input type="text" class="form-control" id="formTicketID"> 
+                            <input type="text" class="form-control inputZ" id="formTicketID"> 
 							<br>
 		                    <label for="formTicketID">Price:</label>
-                            <input type="text" class="form-control" id="formTicketPrice" value="15 EURO"> 
+                            <input type="text" class="form-control inputZ" id="formTicketPrice" value=""> 
 							<br>
 					  </p>
 					  </center>
                   </div>
                   <div class="modal-footer">
-				       <button type="button" class="btn btn-default" data-dismiss="modal" id="agreedAddToSQL">Buy</button>
+				       <button type="button" class="btn btn-default" id="agreedAddToSQL">Buy</button>
                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                   </div>
               </div>
