@@ -1,21 +1,72 @@
 
 .round{
-	background: white;
-	padding:20px 1px 2px 1px;
-	margin:8px;
+	padding:10px 0px 0px 0px;
+	margin:0.2em;
+	margin-left:0.6em;
 	border-radius:10px;
 	color:black;
+	display:inline-block;
 }
+
+.free{background: white;}
+
+.taken{background:red;}
 
 .round p{ 
 text-align:center;
+border: 1px solid black;
 }	
 	
-/*-----*/	
-.round:hover{
+/*----Hover over free seats---*/	
+.free:hover{
 	background:yellow;
 	cursor:pointer;
 }
+
+/*----Hover over taken seats-*/	
+.taken:hover{
+	background:pink;
+	cursor:not-allowed;
+}
+
+
+ /* Span for Reg exp errors */
+.error_req, .sp {color:red;}
+.inputZ{background:#DCDCDC;}
+
+ /* Css for datepicker form */
+.date{color:black; padding-left:0.7em; border-radius:10px;}
+
+
+ /* CSS for Events List Item from {Hall_Events} SQL DB */
+.event{
+	border:1px solid white; padding:1.2em; cursor:pointer;
+   -webkit-transition: all 1.5s ease;
+    -moz-transition: all 1.5s ease;
+    -o-transition: all 1.5s ease;
+     transition: all 1.5s ease;
+	 }
+.event:hover{opacity:0.8;color:red;}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -59,8 +110,8 @@ text-align:center;
 .head-style{
 	color:white;
 	background-color:lavender;padding:10px;
-	background-image: url('https://images4.alphacoders.com/689/689597.jpg');
-	text-shadow: 1px 1px 2px black, 0 0 1em red; /* Shadow params */
+	background-image: url('../images/wallpaper.png');
+	/*text-shadow: 1px 1px 2px black, 0 0 1em red;*/ /* Shadow params */
 	/* background-image: linear-gradient(120deg, #f093fb 0%, #f5576c 100%); */
 	
 	-webkit-transition: all 1.5s ease;

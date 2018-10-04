@@ -32,6 +32,7 @@ $testEventForeveryDay->addTestEvent();
 	  <script src="js/changeStyleTheme.js"></script>   <!-- Change wallpapers,changeStyleTheme JS-->
 	  
 	  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> <!-- Fa-fa library-->
+	 
 	  
 	
 	  
@@ -49,7 +50,7 @@ $testEventForeveryDay->addTestEvent();
 
 
        <div id="headX" class="jumbotron text-center gradient alert-success my-background head-style" style =' background-color:lavender ;'> <!--#2ba6cb;-->
-         <h1 id="h1Text"> <span id="textChange"> myConcert on-line</span> <i class="fa fa-battery-4" style="font-size:48px;color:"></i><!--</span> <img src="http://78.media.tumblr.com/tumblr_m2hq5tt3ma1qav3uso1_400.gif" style="width:3%"/>--> </h1> 
+         <h1 id="h1Text"> <span id="textChange"> myConcert on-line</span> <i class="fa fa-weibo" style="font-size:48px;color:"></i><!--</span> <img src="http://78.media.tumblr.com/tumblr_m2hq5tt3ma1qav3uso1_400.gif" style="width:3%"/>--> </h1> 
 		   
            <!--<p class="header_p">QR Codes on-line processor   <span class="glyphicon glyphicon-duplicate"></span>-->    <!--generates random lists, ramdomizes integers, etc-->
            </p>
@@ -116,11 +117,25 @@ $testEventForeveryDay->addTestEvent();
 				 
 				 
 				 
-				    <!--------- HALL Info (name, amount of seats)-------->
+				 
+				 
+				    <!--------- List of upcoming Events from {Hall_Events} SQL DB, with date which >= today -------->
 				    <br>
+				    <div class="col-sm-12 col-xs-12 head-style" >    
+					    <h3> Upcoming Events<span id="eventsQuanity"></span></h3>
+						<h4 id="upcomingEvents"></h4>
+				    </div>
+				    <!------ END List of upcoming Events from {Hall_Events} SQL DB -------->
+				    
+				 
+				 
+				 
+				 
+				    <!--------- Venue_Hall Info (Venue name, Event Name amount of seats)-------->
+				    <br><hr style="height:3em, color:white;width:99%;">
 				    <div class="col-sm-12 col-xs-12 head-style" id="hallInfo">    
 				    </div>
-				    <!--------- HALL Info (name, amount of seats) -------->
+				    <!------ End Venue_Hall Info (Venue name, Event Name amount of seats) -------->
 				 
 				 
 				 
@@ -179,22 +194,28 @@ $testEventForeveryDay->addTestEvent();
 				      <img src="images/buy.jpg" alt="img"/><br> 
                       <p>
 					     	<label for="formUserName">Your Name:</label>
-                            <input type="text" class="form-control inputZ" id="formUserName" required>
+                            <input type="text" class="form-control inputZ" id="formUserName" required/>
 							<br>
 							<label for="formTicketDate">Ticket Date:</label>
-                            <input type="text" class="form-control inputZ" id="formTicketDate">
+                            <p class="form-control inputZ" id="formTicketDate"></p>
+							<br>
+							<label for="formTicketTime">Time:</label>
+                            <p class="form-control inputZ" id="formTicketTime"></p>
 							<br>
 							<label for="formEvent">Event:</label>
-                            <input type="text" class="form-control inputZ" id="formEvent">
+                            <p class="form-control inputZ" id="formEvent"></p>
+							<br>
+							<label for="formVenue">Venue:</label>
+                            <p class="form-control inputZ" id="formVenue"></p>
 							<br>
 		                    <label for="formTicketPlace">Ticket Place:</label>
-                            <input type="text" class="form-control inputZ" id="formTicketPlace">
+                            <p class="form-control inputZ" id="formTicketPlace"></p>
 							<br>
 		                    <label for="formTicketID">Ticket ID:</label>
-                            <input type="text" class="form-control inputZ" id="formTicketID"> 
+                            <p class="form-control inputZ" id="formTicketID"> </p>
 							<br>
 		                    <label for="formTicketID">Price:</label>
-                            <input type="text" class="form-control inputZ" id="formTicketPrice" value=""> 
+                            <p class="form-control inputZ" id="formTicketPrice" value=""> </p>
 							<br>
 					  </p>
 					  </center>

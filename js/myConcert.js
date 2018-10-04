@@ -1,23 +1,36 @@
 $(document).ready(function(){
-	var x;
-	var z  = [];
-	var event;  //Event name from get_ajaxEvents_SQL()
-	var priceX; //price from get_ajaxEvents_SQL()
+	var x;  //vertical rows in hall
+	var z  = [];  //array with horizontal seats in hall, it is array with specific number of Hoz seats for every Vert row. You may add just one digit to this array, the rest will be autocompleted
+	var event;  //Event name from get_ajax_Events_List_From_SQL()
+	var priceX; //price from get_ajax_Events_List_From_SQL()
+	var venueZ, dateTicket, startTimeZ, seatID;
 	var seatsTakenArray = ["1_2", "1_4", "4_3"]; //taken seats, emulates SQL result for taken seats
 	
-	//sets today to datepicker
+	//sets today to datepicker form value
 	document.getElementById('dateHistorical').valueAsDate = new Date();
 	
 	
 	
-	//onLoad run ajax function to get any Event avilable for today
-	get_ajaxEvents_SQL();
+	//onLoad run ajax function to get any Event avilable for today( from {Hall_Events} SQL DB)
+	get_ajax_Events_List_From_SQL();
 	
-	//gets Seats taken
+	//gets Seats taken!!!!
 	
     //onLoad run ajax function to get Halls name, address, rows and column seats from SQL DB,-> 
-    //includes 3 function inside (checkSeatsInRowsValueInput(x, z) + buildHallSeats(x, z, getHeight) + calcAllSeatsAmount(x,z,data)}		
-	get_ajaxHallSeatsScheme_SQL();
+    //includes 3 function inside (checkSeatsInRowsValueInput(x, z) + buildHallSeats(x, z, getHeight) + calc_AllSeatsAmount_and_show_EventHeaderInfo(x,z,data)}		
+	//get_ajax_VenueHall_Seats_Scheme_From_SQL(); //TEMPORARY
+	
+	
+	
+	//OnClick on the event in the Upcoming Event List-> to show/draw relevant Venue Hall
+	// **************************************************************************************
+    // **************************************************************************************
+    // **                                                                                  **
+	$(document).on("click", '.event', function() {   // this click is used to react to newly generated events;
+	    showRelevantVenueHall_withRelevantEvent(this.id);
+	});
+	
+	
 	
 	
 	
@@ -29,6 +42,7 @@ $(document).ready(function(){
 
 	$("#createHall").click(function() { 
          z  = []; //clear/empty the array, if there are any prev values
+		 event = "Empty Event";
 	    
 		//checks if not empty user's input
 	    if( $("#vertcRows").val()=="" ||  $("#seatsInRows").val()=='' ){
@@ -42,7 +56,7 @@ $(document).ready(function(){
 		//build your Hall onClick
 	    buildHallSeats(x, z, getHeight);  //as z can be array ONLY
 		
-		calcAllSeatsAmount(x,z,null);  //args(input1_Vert, input2Array_Horiz, ajax_data)
+		calc_AllSeatsAmount_and_show_EventHeaderInfo(x,z,null);  //args(input1_Vert, input2Array_Horiz, ajax_data)
 		
     });
 	
@@ -61,12 +75,18 @@ $(document).ready(function(){
 	         alert(this.id + " is already booked");
 		 } else {
 			 //if(confirm ("Buy ticket " + this.id + " ?")){
-				 $("#myModalZ").modal("show");
-				 $('#formTicketPlace').val("Row: " + this.id.split('_')[0] + " Seat:" + this.id.split('_')[1] + " (" + this.id + ")"); //sets the seat place, gets if from this.id (1_2) 
-				 $('#formTicketID').val(generateUUID()); //sets ticket id from function generateUUID()
-				 $('#formTicketDate').val( $("#dateHistorical").val() ); //sets date from date pick up
-				 $('#formEvent').val( event ); //sets Event name from get_ajaxEvents_SQL()  
-				 $('#formTicketPrice').val( priceX + " USD" ); //sets price from get_ajaxEvents_SQL() 
+				 $("#myModalZ").modal("show"); //show ticket order form
+				  
+				 seatID = this.id; //to pass to modal window
+				 $('#formTicketDate').html(dateTicket ); //sets date from get_ajax_Events_List_From_SQL() 
+				 $('#formTicketTime').html(startTimeZ);
+				 $('#formEvent').html(event); //sets Event name from get_ajax_Events_List_From_SQL()  
+				 $('#formVenue').html(venueZ); //sets price from get_ajax_Events_List_From_SQL()
+				 $('#formTicketPlace').html("Row: " + this.id.split('_')[0] + " Seat:" + this.id.split('_')[1] + " (" + this.id + ")"); //sets the seat place, gets if from this.id (1_2)
+				 $('#formTicketID').html(generateUUID()); //sets ticket id from function generateUUID()
+				 $('#formTicketPrice').html( priceX + " USD" ); //sets price from get_ajax_Events_List_From_SQL() 
+				  
+				 
 			 //alert(this.id );
 			 //send ajax to SQL to book
 			 //}
@@ -81,11 +101,11 @@ $(document).ready(function(){
     // **************************************************************************************
     // **                                                                                  **
 	 $(document).on("click", '#agreedAddToSQL', function() {   // this  click  is  used  to   react  to  newly generated cicles;
-         if($('#formUserName').val()=='' || $('#formTicketDate').val()=='' ){
+         if($('#formUserName').val()==''){
 			 alert("Fields can not be empty");
 			 return false;
 		 } else {
-			 alert("Running Ajax INSERT");
+			 alert("Running Ajax INSERT-> place(id), date, venue. " + seatID);
 			 $("#myModalZ").modal("hide");
 		 }
 	 });
@@ -408,31 +428,37 @@ function myValidate(thisX, id, regExp, message, e)  //{e} -. it is change event 
 	
 	
 	
-	//ajaxe gets Halls name, address, rows and column seats from SQL DB
+	//ajax gets Halls name, address, rows and column seats from SQL DB
+	// sends ajax to INNER JOIN  STATEMENT (in order to get info not only about Venue Seats Scheme(SQL Hall_Scheme_List_of_Venues), but also Event Name from (SQL Hall_Events)
 	// **************************************************************************************
     // **************************************************************************************
     //                                                                                     ** 
-	function get_ajaxHallSeatsScheme_SQL()
+	function get_ajax_VenueHall_Seats_Scheme_From_SQL(venueID)
 	{
 		  // send  data  to  PHP handler  ************ 
         $.ajax({
             url: 'ajax_php/myConcert_Get_Hall_SeatsValue_toDraw.php',
             type: 'POST',
 			dataType: 'JSON', // without this it returned string(that can be alerted), now it returns object
-			//passing the city
+			//passing the Venue ID
             data: { 
-			    serverHall_Id: 1  //hall id (as in SQL DB)
+			    serverHall_Id: venueID  //hall id (as in SQL DB Hall_Scheme_List_of_Venues)
 			},
             success: function(data) {
                 // do something;
                 console.log(data);
 				x = data[0].place_vert_column; //gets vert column seats
 				z = data[0].place_horz_rows;//.split(','); //gets horiz column seats
-				alert(z);
-				checkSeatsInRowsValueInput(x, z); //runs //gets horiz column seats through validation, if they match array and if it's length==x = data[0].place_vert_column
-				buildHallSeats(x, z, getHeight); //draw a hall
 				
-				calcAllSeatsAmount(x,z,data);  // //args(input1_Vert, input2Array_Horiz, ajax_data)   //data must have for visibility
+				venueZ = data[0].place_name;   //gets Global Venuehall Name (used to html in ticket order)
+				priceX = data[0].ev_price;
+				dateTicket = unix_to_normal(data[0].ev_date);
+				alert(z);
+				
+				checkSeatsInRowsValueInput(x, z); //runs/puts horiz column seats through validation, if they match array and if it's length==x = data[0].place_vert_column
+				buildHallSeats(x, z, getHeight); //draw a Relevant hall
+				
+				calc_AllSeatsAmount_and_show_EventHeaderInfo(x,z,data);  // //args(input1_Vert, input2Array_Horiz, ajax_data)   //data must have for visibility
 			
 			   
             },  //end success
@@ -461,11 +487,11 @@ function myValidate(thisX, id, regExp, message, e)  //{e} -. it is change event 
 	
 	
 	
-	//function to get SQL EVENTS
+	//function to get SQL EVENTS from {Hall_Events} SQL DB), selects ONLY with date which >= today, sends ajax to INNER JOIN to get Events List + VenueHall Name by ID 
 	// **************************************************************************************
     // **************************************************************************************
     //                                                                                     ** 
-	function get_ajaxEvents_SQL() //
+	function get_ajax_Events_List_From_SQL() //
 	{
 		
 		//alert($('#dateHistorical').val());
@@ -484,10 +510,25 @@ function myValidate(thisX, id, regExp, message, e)  //{e} -. it is change event 
 			},
             success: function(data) {
                 // do something;
-                alert(data);
-				event = data[0].ev_name; //event name
-				priceX = data[0].ev_price; //event price
-			
+                alert(data.length + " events " +  JSON.stringify(data, null, 4));
+				
+				var eventsText = '';
+              	for(i = 0; i < data.length; i++){
+					//ID for event to use in SQL, i.e => LTJ Bukhem_1538683200_1 =>{eventName(from DB Hall_Events)_Unix(from DB Hall_Events)_venueID(from DB Hall_Scheme_List_of_Venues)}
+					var idZ = data[i].ev_name + "_" + data[i].ev_date + "_" + data[i].place_id;  //form the id of each event, contains id = 'date_unix_venueID'
+					
+					//form the final text with Upcoming events
+					eventsText = eventsText + "<div id='" + idZ + "' class='row event'>" + 
+ 					                              "<div class='col-sm-3 col-xs-4'>" + data[i].ev_name + "</div>" +   //Event name
+											      "<div class='col-sm-3 col-xs-4'>&nbsp;<i class='fa fa-calendar-check-o'></i>" + new Date(data[i].ev_date * 1000).toLocaleString().slice(0,10) + "</div>" + //convert SQL Event UnixStamp to normal date {new Date(Unix * 1000)}, then {toLocaleString()}  to form {04.10.2018, 23:00:00} and {.slice(0,10)} to leave only 04.10.2018
+											      "<div class='col-sm-3 col-xs-4'>&nbsp;<i class='fa fa-home'></i>&nbsp;" + data[i].place_name + ", " + data[i].place_address +"</div>" +  //Fa Lib icon +  venue name + address
+				                              "</div>";
+				}
+				
+				//event = data[0].ev_name; //event name    ,CD??
+				//priceX = data[0].ev_price; //event price ,CD??
+				//venueZ = data[0].place_name;
+			    $("#upcomingEvents").stop().fadeOut("slow",function(){ $(this).html(eventsText)}).fadeIn(2000);
 			   
             },  //end success
 			error: function (error) {
@@ -510,27 +551,39 @@ function myValidate(thisX, id, regExp, message, e)  //{e} -. it is change event 
 	
 	
 	
-	//function to calc all seats, works either for SQL result or custom draft from yout form
+	//function to calc all seats + html info for selected Event, works either for SQL result or custom draft from yout form
 	// **************************************************************************************
     // **************************************************************************************
     //                                                                                     ** 
-	function calcAllSeatsAmount(xx, zz, data)  //args(input1_Vert, input2Array_Horiz, ajax_data)
+	function calc_AllSeatsAmount_and_show_EventHeaderInfo(xx, zz, data)  //args(input1_Vert, input2Array_Horiz, ajax_data)
 	{
 		var nameZ;
 		//if 3rd argument is NULL(i.e not used in NON-AJAX, when there is no data)
 		if(!data){
 			nameZ = "Custom draft";
+			event = "Your custom Event!!!";
+			dateZ = "Your custom Date";
+			startTimeZ = "Your Time";
 		} else {
-			nameZ = data[0].place_name; //gets the Venue name from ajax SQL
+			nameZ = data[0].place_name; //gets the Venue name from ajax SQL, from functon {get_ajax_VenueHall_Seats_Scheme_From_SQL(venueID)}
+			event = data[0].ev_name; //gets Event name from ajax data
+			dateZ = data[0].ev_date; //gets Event data from ajax data
+			dateZ = unix_to_normal(dateZ); //new Date(dateZ * 1000).toLocaleString().slice(0,10);  // Date of event //convert SQL Event UnixStamp to normal date {new Date(Unix * 1000)}, then {toLocaleString()}  to form {04.10.2018, 23:00:00} and {.slice(0,10)} to leave only 04.10.2018
+		    startTimeZ = data[0].ev_start_time; //start time
 		}
 	
 		var allSeatsinHall = 0; //all seats amount
 		for(i = 0; i < xx; i++){
 		    allSeatsinHall = allSeatsinHall + parseFloat(zz[i]);
 		}
-		$("#hallInfo").html("<p>Venue: " + nameZ + ". Event: " + event + ", Places=> " + allSeatsinHall + "<p>"); //insert before seats Hall name, address and places
+		$("#hallInfo").html("<h4><i class='fa fa-home'></i>&nbsp;" + nameZ + "&nbsp&nbsp " +            //Venue name 
+		                     "<i class='fa fa-vcard'></i>&nbsp;&nbsp" + event + "&nbsp&nbsp " +        //Event Name
+							 "<i class='fa fa-calendar-check-o'></i>&nbsp;" + dateZ + "&nbsp&nbsp " + //Event Date
+							 "<i class='fa fa-clock-o'></i>&nbsp;" + startTimeZ + "&nbsp&nbsp " + //Event Date
+							 "<i class='fa fa-sitemap'></i>&nbsp;Places=> " + allSeatsinHall +        //Venue Hall all seats amount
+							 "</h4>"); //insert before seats Hall name, address and places
 	
-	}
+	}  
 	// **                                                                                  **
     // **************************************************************************************
     // **************************************************************************************
@@ -538,6 +591,37 @@ function myValidate(thisX, id, regExp, message, e)  //{e} -. it is change event 
 	
 	
 	
+	
+	//Function that shows/draw relevant Venue Hall, triggered by OnClick on the event in the Upcoming Event List
+	// **************************************************************************************
+    // **************************************************************************************
+    //                                                                                     ** 
+	function showRelevantVenueHall_withRelevantEvent(passedID)
+	{
+		alert(passedID);  //id of clicked, i.e => LTJ Bukhem_1538683200_1 =>{eventName(from DB Hall_Events)_Unix(from DB Hall_Events)_venueID(from DB Hall_Scheme_List_of_Venues)}
+		var idValues = passedID.split("_"); //split id to eventName, eventUnix, venueID
+		
+		//draw Venue Hall with seats and relevant Event
+		get_ajax_VenueHall_Seats_Scheme_From_SQL(idValues[2]);//passes Venue ID  //includes 3 function inside (checkSeatsInRowsValueInput(x, z) + buildHallSeats(x, z, getHeight) + calc_AllSeatsAmount_and_show_EventHeaderInfo(x,z,data)}
+	
+	    scrollResults("#hallInfo");
+	
+	}
+	
+	// **                                                                                  **
+    // **************************************************************************************
+    // **************************************************************************************
+	
+	
+	
+	
+	
+	
+	
+	function unix_to_normal(unixZ)    //convert SQL Event UnixStamp to normal date {new Date(Unix * 1000)}, then {toLocaleString()}  to form {04.10.2018, 23:00:00} and {.slice(0,10)} to leave only 04.10.2018
+	{
+		return new Date(unixZ * 1000).toLocaleString().slice(0,10);
+	}
 	
 	
 	
@@ -557,6 +641,56 @@ function myValidate(thisX, id, regExp, message, e)  //{e} -. it is change event 
 	
 	   
 
+	   
+	   
+	   
+	   
+	   
+//=============================== DONOR =======================================================================
+	   
+	 // Scroll the page to results  #resultFinal
+	// **************************************************************************************
+    // **************************************************************************************
+    //                                                                                     ** 
+	function scrollResults(divName, parent)  //arg(DivID, levels to go up from DivID)
+	{   //if 2nd arg is not provided while calling the function with one arg
+		if (typeof(parent)==='undefined') {
+		
+            $('html, body').animate({
+                scrollTop: $(divName).offset().top
+                //scrollTop: $('.your-class').offset().top
+             }, 'slow'); 
+		     // END Scroll the page to results
+		} else {
+			//if 2nd argument is provided
+			var stringX = "$(divName)" + parent + "offset().top";  //i.e constructs -> $("#divID").parent().parent().offset().top
+			$('html, body').animate({
+                scrollTop: eval(stringX)         //eval is must-have, crashes without it
+                }, 'slow'); 
+		}
+	}
+	
+	// **                                                                                  **
+    // **************************************************************************************
+    // **************************************************************************************
+	
+	
+	
+	
+	
+	
+	 // **************************************************************************************
+    // **************************************************************************************
+    //                                                                                     ** 
+	
+	
+	function scroll_toTop() 
+	{
+	    $("html, body").animate({ scrollTop: 0 }, "slow");	
+	}
+	// **                                                                                  **
+    // **************************************************************************************
+    // **************************************************************************************
 	
 	
 	
