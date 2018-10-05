@@ -1,9 +1,19 @@
 <?php
 //session_start();
 include 'Classes/autoload.php';//uses autoload instead of manual includin each class->
-$testEventForeveryDay = new Auto_Add_Event_Every_Day();
-$testEventForeveryDay->addTestEvent();
 
+date_default_timezone_set("Europe/Kiev"); //mega Fix to fix Error in UnixStamp Diffrenece on LocalHost and Server(local was Moscow, server zzz - Kyiv)
+
+$testEventForeveryDay = new Auto_Add_Event_Every_Day(); 
+$testEventForeveryDay->addTestEvent();        //Auto Adds INSERT events for every current day, just for test
+//$testEventForeveryDay->autoDeleteOldEvents(); //Auto DELETE events older than today
+
+//get to know timezone zet at Server
+/*
+$date = new DateTime();
+$timeZone = $date->getTimezone();
+echo $timeZone->getName();
+*/
 ?>
 
 <!doctype html>
@@ -16,22 +26,18 @@ $testEventForeveryDay->addTestEvent();
       <meta name="keywords" content="myConcert">
       <title>myConcert</title>
   
-      <!--Favicon-->
-      <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
 
       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-	  
+	  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> <!-- Fa-fa library-->
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
       <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	 
-
       <link rel="stylesheet" type="text/css" media="all" href="css/myConcert.css">
 	  
       <script src="js/myConcert.js"></script>         <!-- Core myFacebook API JS-->
-	  
 	  <script src="js/changeStyleTheme.js"></script>   <!-- Change wallpapers,changeStyleTheme JS-->
 	  
-	  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> <!-- Fa-fa library-->
+	  
 	 
 	  
 	
@@ -50,15 +56,7 @@ $testEventForeveryDay->addTestEvent();
 
 
        <div id="headX" class="jumbotron text-center gradient alert-success my-background head-style" style =' background-color:lavender ;'> <!--#2ba6cb;-->
-         <h1 id="h1Text"> <span id="textChange"> myConcert on-line</span> <i class="fa fa-weibo" style="font-size:48px;color:"></i><!--</span> <img src="http://78.media.tumblr.com/tumblr_m2hq5tt3ma1qav3uso1_400.gif" style="width:3%"/>--> </h1> 
-		   
-           <!--<p class="header_p">QR Codes on-line processor   <span class="glyphicon glyphicon-duplicate"></span>-->    <!--generates random lists, ramdomizes integers, etc-->
-           </p>
-		   <!--<p class="language"><a href="/eng">ENG</a></p>-->
-		   
-		  
-
-		   
+         <h1 id="h1Text"> <span id="textChange"> myConcert on-line</span> <i class="fa fa-weibo" style="font-size:48px;color:"></i><!--</span> <img src="http://78.media.tumblr.com/tumblr_m2hq5tt3ma1qav3uso1_400.gif" style="width:3%"/>--> </h1> 	   
 	   </div>
 
 
@@ -100,6 +98,9 @@ $testEventForeveryDay->addTestEvent();
 					  <div class="col-sm-1 col-xs-12 my-background ">
 					  </div>
 					 
+					 
+					 
+					 
 				     <!---------------- Div with DatePicker -------->	
 				     <div class="col-sm-4 col-xs-12 my-background coreDivs-toHide head-style"  id="datePicker" >
 					     <div class="form-group">
@@ -129,7 +130,18 @@ $testEventForeveryDay->addTestEvent();
 				    
 				 
 				 
-				 
+				    <!--------- Error Closable window-------->
+					<br>
+					<div class="col-sm-12 col-xs-12" id="errorDiv"> 
+				       
+					</div>
+				    <!------ ENF Error Closable window-------->
+					
+					
+					
+					
+					
+					
 				 
 				    <!--------- Venue_Hall Info (Venue name, Event Name amount of seats)-------->
 				    <br><hr style="height:3em, color:white;width:99%;">
@@ -211,7 +223,7 @@ $testEventForeveryDay->addTestEvent();
 		                    <label for="formTicketPlace">Ticket Place:</label>
                             <p class="form-control inputZ" id="formTicketPlace"></p>
 							<br>
-		                    <label for="formTicketID">Ticket ID:</label>
+		                    <label for="formTicketID">Ticket ID (just for test, will be generated in PHP):</label>
                             <p class="form-control inputZ" id="formTicketID"> </p>
 							<br>
 		                    <label for="formTicketID">Price:</label>

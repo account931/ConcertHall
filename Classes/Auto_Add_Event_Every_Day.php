@@ -19,15 +19,16 @@ class Auto_Add_Event_Every_Day  {
 		
 		//adds new EVENT for today
 		//gets today UnixStamp
-		$date = strtotime("+1 day");
-		$UnixSt = strtotime(date('d-m-Y',$date ));   //echo date('m-d-y',$date)
+		//$date = strtotime("+1 day");  //time ERROR fixed with setting in index.php {date_default_timezone_set("Europe/Kiev")} //mega Error in UnixStamp Diffrenece on LocalHost and Server was due (local was Moscow, server zzz - Kyiv)
+		$UnixSt = strtotime(date('d-m-Y'/*,$date */));  //gets current day  //echo date('m-d-y',$date)
+		
 		
 		try{
 			//checks if an event for today has not been created yet
 			$resFR = $conn->query("SELECT * FROM Hall_Events WHERE ev_date ='{$UnixSt}'"); 
             if($resFR->rowCount()==0) {
 			
-                //Start INSERT (from function StartBooking())---------
+                //Start INSERT (from  ---------
                 $sth = $conn ->prepare("INSERT INTO Hall_Events(ev_name, ev_venueHall_id, ev_price, ev_date, ev_start_time ) VALUES (:event, :hall, :price, :date, :startTime) ");
                 $sth->bindValue(':event', 'LTJ Bukhem');   //name of event
                 $sth->bindValue(':hall' ,  1);             // the id of ConcertHall in table Hall_List_of_Venues
@@ -35,7 +36,28 @@ class Auto_Add_Event_Every_Day  {
                 $sth->bindValue(':date' , $UnixSt);        //unix timestamp 
                 $sth->bindValue(':startTime', '19.30' );
                 $sth->execute();
-                //END INSERT (from function StartBooking())---------
+                //END INSERT (from function ---------
+				
+				//Start INSERT (from function StartBooking())---------
+                $sth2 = $conn ->prepare("INSERT INTO Hall_Events(ev_name, ev_venueHall_id, ev_price, ev_date,  ev_start_time ) VALUES (:event, :hall, :price, :date, :startTime) ");
+                $sth2->bindValue(':event', 'Ed Rush & Optical');   //name of event
+                $sth2->bindValue(':hall' ,  2);             // the id of ConcertHall in table Hall_List_of_Venues
+                $sth2->bindValue(':price',  23);            // TAble Number ID
+                $sth2->bindValue(':date' , $UnixSt);        //unix timestamp
+                $sth2->bindValue(':startTime' , '22.00');
+                $sth2->execute();
+				
+				
+				//Start INSERT (from function StartBooking())---------
+                $sth3 = $conn ->prepare("INSERT INTO Hall_Events(ev_name, ev_venueHall_id, ev_price, ev_date,  ev_start_time ) VALUES (:event, :hall, :price, :date, :startTime) ");
+                $sth3->bindValue(':event', 'BSE');   //name of event
+                $sth3->bindValue(':hall' ,  3);             // the id of ConcertHall in table Hall_List_of_Venues
+                $sth3->bindValue(':price',  44);            // TAble Number ID
+                $sth3->bindValue(':date' , $UnixSt);        //unix timestamp
+                $sth3->bindValue(':startTime' , '21.00');
+                $sth3->execute();
+				
+				
             } //else {echo "exists";}
 
 		} catch(PDOException $e) {
@@ -47,7 +69,7 @@ class Auto_Add_Event_Every_Day  {
 		
 		
 		
-		
+		/*
 		//adds a new EVENT for aftertomorrow (+2 days)
 		$dateTomorrow = strtotime("+3 day");
 		$UnixStTomorrow = strtotime(date('d-m-Y',$dateTomorrow ));   //gets unixstamp for aftertomorrow//echo date('m-d-y',$date)
@@ -103,6 +125,7 @@ class Auto_Add_Event_Every_Day  {
         }
 		
 		//END adds a new EVENT for AFTER-aftertomorrow (+4 days)
+		*/
 		
     $conn = null;
 
@@ -119,10 +142,41 @@ class Auto_Add_Event_Every_Day  {
 
 
 
+// Autodelete old events
+// **************************************************************************************
+// **************************************************************************************
+//                                                                                     **  
+    public function autoDeleteOldEvents() 
+	{
+		
+		global $conn; // global from $singeltone=ConnectDB::getInstance();
+		$singeltone=ConnectDB::getInstance(); //creates connection $con;  //was deactivated in index.php
+		
+		$UnixToday = strtotime(date('d-m-Y'/*,$date */));  //gets current day
+		
+		try {	
+		    //$sql = "DELETE FROM Hall_Events WHERE ev_date < :currDate";      
+            //$stmt = $conn->prepare($sql);
+			$stmt = $conn->prepare("DELETE FROM Hall_Events WHERE ev_date < :currDate");
+            $stmt->bindParam(':currDate', $UnixToday/*, PDO::PARAM_INT*/);   
+            $stmt->execute();
+        }
+        catch(PDOException $e)
+        {
+             echo $sql . "<br>" . $e->getMessage();
+        }
+
+$conn = null;
 
 
 
+	}
 
+
+// **                                                                                  **
+// **************************************************************************************
+// **************************************************************************************
+// END StartBooking()
 
 
 

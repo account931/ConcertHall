@@ -58,6 +58,7 @@ $(document).ready(function(){
 		
 		calc_AllSeatsAmount_and_show_EventHeaderInfo(x,z,null);  //args(input1_Vert, input2Array_Horiz, ajax_data)
 		
+		scrollResults("#hallInfo");
     });
 	
 	
@@ -105,7 +106,7 @@ $(document).ready(function(){
 			 alert("Fields can not be empty");
 			 return false;
 		 } else {
-			 alert("Running Ajax INSERT-> place(id), date, venue. " + seatID);
+			 alert("Running Ajax INSERT-> place(id), date, venue, name. " + seatID);
 			 $("#myModalZ").modal("hide");
 		 }
 	 });
@@ -128,7 +129,9 @@ $(document).ready(function(){
 		var styleTakenFree;
 		
 		//get arrayHorizont max element for automatic CSS width
-		var max = Math.max.apply(null, arrayHorizont); alert("Max Horiz seats value " + max);
+		var max = Math.max.apply(null, arrayHorizont); 
+		//alert("Max Horiz seats value " + max);
+		$("#err").append("<br>Max Horiz seats value " + max); //instead of alert
 		
 		//Formula
 		if(max > 0 && max < 20){
@@ -196,7 +199,8 @@ $(document).ready(function(){
    $(".round").height(tallest);
 //}
 
-   alert("tallest " + tallest);
+   //alert("tallest " + tallest);
+   $("#err").append("<br>tallest " + tallest); //instead of alert
    //equalHeight($(".round"));
 
 	
@@ -248,36 +252,48 @@ $(document).ready(function(){
 		  
 		 //if comma is detected in 2nd input, i.e custom user values for H seats
 		 if( patt.test(input2)){
-			 alert("Comma detected");
+			 //alert("Comma detected");
+			 //Below is uded instead of alert
+			 var errorText = '<div class="alert alert-info alert-dismissible" id="err">' +
+					         '<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>' +
+                             '<strong>Atention!</strong> Comma detected' +
+                             '</div>';
+			 $("#errorDiv").html(errorText);						
 			 
 			 //if user printed more or less values that requirs input1(input1.vertcRows = 3, input2.seatsInRows=3,2)
 			 if(input2.split(",").length!= input1){
 				 
 				 //IF Users printed less values than required, (input1.vertcRows = 3, input2.seatsInRows = 3, 2)
 				 if( input2.split(",").length < input1){
-				     alert("Seats don't not match [Less]");
+				     //alert("Seats don't not match [Less]");
+					 $("#err").append("<br>Seats don't not match [Less]"); //instead of alert
 				     var difference = input1 - input2.split(",").length; //alert("difference " + difference);
 				     z = input2.split(",");
 				     for(i = 0; i < difference; i++){
 					     z.push(z[z.length - 1]);	 //just adds to array Z last Z array element
 				     }
-					 alert(z);
+					 //alert(z);
+					 $("#err").append("<br>" + z); //instead of alert
 				 }
 				
 				 
 				 //IF Users printed more values than required, (input1.vertcRows = 3, input2.seatsInRows = 3, 2, 7, 8). Just take the first necessary inputs
 				 if ( input2.split(",").length > input1 ) {
-					 alert("Seats don't not match [More]");
+					 //alert("Seats don't not match [More]");
+					 $("#err").append("<br>Seats don't not match [More]"); //instead of alert
 					 var b = input2.split(",");
 					 for(i = 0; i < x; i++){
 			             z.push(b[i]);
 		             } 
-					 alert(z);
+					 //alert(z);
+					 $("#err").append("<br>" + z); //instead of alert
+					 
 				 }
 			 
              // If user printed equil amount			 
 			 } else {
-				 alert("Seats match");
+				 //alert("Seats match");
+				 $("#err").append("<br>Seats match"); //instead of alert
 				 z = input2.split(",");
 			 }
 			 
@@ -285,7 +301,8 @@ $(document).ready(function(){
 			 //IF user enetered just 1 digit, autocomplete the array with this digit
 			 //creates array(as 2nd arg can be array ONLY, fill it with value, to make sure z.lengh === x)
 		     //var z =[];
-			 alert("Just 1 digit");
+			 //alert("Just 1 digit");
+			 $("#err").append("<br>Just 1 digit"); //instead of alert
 		     for(i = 0; i < x; i++){
 			     z.push(y);
 		     }
@@ -420,7 +437,8 @@ function myValidate(thisX, id, regExp, message, e)  //{e} -. it is change event 
 	{
 		//gets last class round height 
 	    var lastHeight = $(".round:last").height();
-	    alert("last height is " + lastHeight + " id ->" + $(".round:last").attr('id') + " legth-> " + $(".round").length);
+	    //alert("last height is " + lastHeight + " id ->" + $(".round:last").attr('id') + " legth-> " + $(".round").length);
+		$("#err").append("<br>last height is " + lastHeight + " id ->" + $(".round:last").attr('id') + " legth-> " + $(".round").length); //instead of alert
 		$(".round:last").html("777")
 	}
 	
@@ -453,7 +471,8 @@ function myValidate(thisX, id, regExp, message, e)  //{e} -. it is change event 
 				venueZ = data[0].place_name;   //gets Global Venuehall Name (used to html in ticket order)
 				priceX = data[0].ev_price;
 				dateTicket = unix_to_normal(data[0].ev_date);
-				alert(z);
+				//alert(z);
+				$("#err").append("<br>" + z); //instead of alert
 				
 				checkSeatsInRowsValueInput(x, z); //runs/puts horiz column seats through validation, if they match array and if it's length==x = data[0].place_vert_column
 				buildHallSeats(x, z, getHeight); //draw a Relevant hall
@@ -598,7 +617,8 @@ function myValidate(thisX, id, regExp, message, e)  //{e} -. it is change event 
     //                                                                                     ** 
 	function showRelevantVenueHall_withRelevantEvent(passedID)
 	{
-		alert(passedID);  //id of clicked, i.e => LTJ Bukhem_1538683200_1 =>{eventName(from DB Hall_Events)_Unix(from DB Hall_Events)_venueID(from DB Hall_Scheme_List_of_Venues)}
+		//alert(passedID);  //id of clicked, i.e => LTJ Bukhem_1538683200_1 =>{eventName(from DB Hall_Events)_Unix(from DB Hall_Events)_venueID(from DB Hall_Scheme_List_of_Venues)}
+		$("#err").append("<br>ID is " + passedID); //instead of alert
 		var idValues = passedID.split("_"); //split id to eventName, eventUnix, venueID
 		
 		//draw Venue Hall with seats and relevant Event
