@@ -3,7 +3,7 @@ $(document).ready(function(){
 	var z  = [];  //array with horizontal seats in hall, it is array with specific number of Hoz seats for every Vert row. You may add just one digit to this array, the rest will be autocompleted
 	var event;  //Event name from get_ajax_Events_List_From_SQL()
 	var priceX; //price from get_ajax_Events_List_From_SQL()
-	var venueZ, dateTicket, startTimeZ, seatID;
+	var venueZ, dateTicket, startTimeZ, seatID, dateZ1, nameZ;
 	var seatsTakenArray = ["1_2", "1_4", "4_3"]; //taken seats, emulates SQL result for taken seats
 	
 	//sets today to datepicker form value
@@ -78,6 +78,9 @@ $(document).ready(function(){
 			 //if(confirm ("Buy ticket " + this.id + " ?")){
 				 $("#myModalZ").modal("show"); //show ticket order form
 				  
+				 $('#formUserName').html("");  //clears name input
+				 $('#formUserEmail').html("");  //clears name input
+				  
 				 seatID = this.id; //to pass to modal window
 				 $('#formTicketDate').html(dateTicket ); //sets date from get_ajax_Events_List_From_SQL() 
 				 $('#formTicketTime').html(startTimeZ);
@@ -102,12 +105,15 @@ $(document).ready(function(){
     // **************************************************************************************
     // **                                                                                  **
 	 $(document).on("click", '#agreedAddToSQL', function() {   // this  click  is  used  to   react  to  newly generated cicles;
-         if($('#formUserName').val()==''){
-			 alert("Fields can not be empty");
+         if($('#formUserName').val()=='' || $('#formUserEmail').val()==''){  
+			 alert("Fields 'Name and E-mail' can not be empty");
 			 return false;
 		 } else {
 			 alert("Running Ajax INSERT-> place(id), date, venue, name. " + seatID);
 			 $("#myModalZ").modal("hide");
+			 
+			 // function send ajax to buy Ticket (INSERT to DB {Hall_Free_taken_seats})
+			 run_ajax_to_Buy_Ticket();
 		 }
 	 });
 	
@@ -343,8 +349,8 @@ $(document).ready(function(){
 	
 	
 //RegExp for Front-end checking the second input===================================
-var RegExp_Template = /^[0-9]+(,[0-9]+)*$/; // /^[0-9]{0,2}[\,]?\d*[\,]*$/;  ///^[0-9]{1,16}[\,]*[0-9]*\d$/;   //  /^[a-zA-Z0-9_-]{1,16}\.(gif|jpg|mp3)$/;   //only english letter or ints,(-_) name length (1-16), ends in(.(gif|jpg|mp3)   //was  /^[a-zA-Z]{1,16}$/;
-	
+var RegExp_Template = /^[0-9]+(,[0-9]+)*$/; //may contain only a digit or digits followed by comma, comma can not be last// /^[0-9]{0,2}[\,]?\d*[\,]*$/;  ///^[0-9]{1,16}[\,]*[0-9]*\d$/;   //  /^[a-zA-Z0-9_-]{1,16}\.(gif|jpg|mp3)$/;   //only english letter or ints,(-_) name length (1-16), ends in(.(gif|jpg|mp3)   //was  /^[a-zA-Z]{1,16}$/;
+var email_regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i;  //email template
 // **************************************************************************************
 // **************************************************************************************
 //                                                                                     ** 
@@ -414,7 +420,7 @@ function myValidate(thisX, id, regExp, message, e)  //{e} -. it is change event 
 	
 	
 	
-	// function to generate unique order number--------------------
+	// function to generate unique order number, JUST FOR TEST, WILL BE DELEGATED TO PHP(CLASSES/Buy_Ticket.php)--------------------
 	function generateUUID() { // Public Domain/MIT
         var d = new Date().getTime();
         if (typeof performance !== 'undefined' && typeof performance.now === 'function'){
@@ -529,9 +535,16 @@ function myValidate(thisX, id, regExp, message, e)  //{e} -. it is change event 
 			},
             success: function(data) {
                 // do something;
+				
                 alert(data.length + " events " +  JSON.stringify(data, null, 4));
 				
 				var eventsText = '';
+				
+				//if php SELECT returned 0 events
+				if (data.length == 0){
+					eventsText = 'No Events Found!!!';
+					}
+				
               	for(i = 0; i < data.length; i++){
 					//ID for event to use in SQL, i.e => LTJ Bukhem_1538683200_1 =>{eventName(from DB Hall_Events)_Unix(from DB Hall_Events)_venueID(from DB Hall_Scheme_List_of_Venues)}
 					var idZ = data[i].ev_name + "_" + data[i].ev_date + "_" + data[i].place_id;  //form the id of each event, contains id = 'date_unix_venueID'
@@ -586,8 +599,8 @@ function myValidate(thisX, id, regExp, message, e)  //{e} -. it is change event 
 		} else {
 			nameZ = data[0].place_name; //gets the Venue name from ajax SQL, from functon {get_ajax_VenueHall_Seats_Scheme_From_SQL(venueID)}
 			event = data[0].ev_name; //gets Event name from ajax data
-			dateZ = data[0].ev_date; //gets Event data from ajax data
-			dateZ = unix_to_normal(dateZ); //new Date(dateZ * 1000).toLocaleString().slice(0,10);  // Date of event //convert SQL Event UnixStamp to normal date {new Date(Unix * 1000)}, then {toLocaleString()}  to form {04.10.2018, 23:00:00} and {.slice(0,10)} to leave only 04.10.2018
+			dateZ1 = data[0].ev_date; //gets Event data from ajax data
+			dateZ = unix_to_normal(dateZ1); //new Date(dateZ * 1000).toLocaleString().slice(0,10);  // Date of event //convert SQL Event UnixStamp to normal date {new Date(Unix * 1000)}, then {toLocaleString()}  to form {04.10.2018, 23:00:00} and {.slice(0,10)} to leave only 04.10.2018
 		    startTimeZ = data[0].ev_start_time; //start time
 		}
 	
@@ -635,9 +648,58 @@ function myValidate(thisX, id, regExp, message, e)  //{e} -. it is change event 
 	
 	
 	
+	// function send ajax to buy Ticket (INSERT to DB {Hall_Free_taken_seats})
+	// **************************************************************************************
+    // **************************************************************************************
+    //                                                                                     ** 
+	function run_ajax_to_Buy_Ticket()
+	{
+		// gets value from get_ajax_VenueHall_Seats_Scheme_From_SQL(venueID) + calc_AllSeatsAmount_and_show_EventHeaderInfo(xx, zz, data)
+		alert("ajax buy-> " + dateZ1 + " " + event + " " + venueZ  + " " + seatID);
+		// send  data  to  PHP handler  ************ 
+        $.ajax({
+            url: 'ajax_php/myConcert_Buy_Ticket.php',
+            type: 'POST',
+			dataType: 'json', // without this it returned string(that can be alerted), now it returns object
+			//passing the city
+            data: { 
+			    serverName:  $('#formUserName').val(),  //passes Name
+				serverEmail: $('#formUserEmail').val(),  //passes Name
+				serverDate: dateZ1,  //passes Unix Date
+				serverEvent: event,  //passes event name
+				serverVenue: venueZ,  //passes Venue name
+				serverTicketPlace: seatID,  //passes Venue name
+			},
+            success: function(data) {
+                // do something;
+				alert(data);
+				
+                
+			   
+            },  //end success
+			error: function (error) {
+				alert("Ticket was not booked!!! An error occured");
+				//$("#status").stop().fadeOut("slow",function(){ $(this).html("<h4 style='color:red;padding:3em;'>ERROR!!! <br> NO Events FOUND</h4>")}).fadeIn(2000);
+            }	
+        });
+                                               
+       //  END AJAXed  part 
+	}
+	
+	// **                                                                                  **
+    // **************************************************************************************
+    // **************************************************************************************
 	
 	
 	
+	
+	
+	
+	
+	////convert SQL Event UnixStamp to normal date
+	// **************************************************************************************
+    // **************************************************************************************
+    //                                                                                     ** 
 	function unix_to_normal(unixZ)    //convert SQL Event UnixStamp to normal date {new Date(Unix * 1000)}, then {toLocaleString()}  to form {04.10.2018, 23:00:00} and {.slice(0,10)} to leave only 04.10.2018
 	{
 		return new Date(unixZ * 1000).toLocaleString().slice(0,10);

@@ -208,6 +208,9 @@ echo $timeZone->getName();
 					     	<label for="formUserName">Your Name:</label>
                             <input type="text" class="form-control inputZ" id="formUserName" required/>
 							<br>
+							<label for="formUserEmail">Your E-mail:</label>
+                            <input type="text" class="form-control inputZ" id="formUserEmail" required/>
+							<br>
 							<label for="formTicketDate">Ticket Date:</label>
                             <p class="form-control inputZ" id="formTicketDate"></p>
 							<br>
