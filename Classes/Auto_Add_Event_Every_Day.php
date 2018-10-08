@@ -22,6 +22,14 @@ class Auto_Add_Event_Every_Day  {
 		//$date = strtotime("+1 day");  //time ERROR fixed with setting in index.php {date_default_timezone_set("Europe/Kiev")} //mega Error in UnixStamp Diffrenece on LocalHost and Server was due (local was Moscow, server zzz - Kyiv)
 		$UnixSt = strtotime(date('d-m-Y'/*,$date */));  //gets current day  //echo date('m-d-y',$date)
 		
+		$artistsArray = ['LTJ Bukhem', 'Ed Rush & Optical', 'BSE', 'Noisia', 'Concord Dawn', 'TeeBee', 'Calyx', 'Raiden', 'Technical Intch', 'Spor', 'Corrupt Souls', 'Klute', 'Spectrasoul', 'Submerged', 'Pendulum', 'High Contrast', 'Chase & Status', 'Kosheen', 'Black Sun Empire', 'Sub Focus', 'Roni Size', 'Photek', 'Future Prophecies', 'Evol Intent', 'Enduser', 'Nu:Tone', 'Dieselboy', 'Camo & Krooked', 'LimeWax', 'Omni Trio', 'State Of Mind', 'Dom & Roland', 'Phace', 'The Upbeats', 'Bad Company UK', 'Kryptic Minds & Leon Switch', 'D.Kay', 'Chris.SU'];
+		//gets 3 random artist to auto INSERT
+		$randomArtists = [];
+		for ($i = 0; $i < 3; $i++ ){
+			$randomX = $artistsArray[rand(0, count($artistsArray) - 1)];
+			array_push($randomArtists, $randomX);  
+		}
+		//print_r($randomArtists); uncomment to see in index.php first line
 		
 		try{
 			//checks if an event for today has not been created yet
@@ -30,7 +38,7 @@ class Auto_Add_Event_Every_Day  {
 			
                 //Start INSERT (from  ---------
                 $sth = $conn ->prepare("INSERT INTO Hall_Events(ev_name, ev_venueHall_id, ev_price, ev_date, ev_start_time ) VALUES (:event, :hall, :price, :date, :startTime) ");
-                $sth->bindValue(':event', 'LTJ Bukhem');   //name of event
+                $sth->bindValue(':event', $randomArtists[0] );   //name of event 'LTJ Bukhem'
                 $sth->bindValue(':hall' ,  1);             // the id of ConcertHall in table Hall_List_of_Venues
                 $sth->bindValue(':price',  15);            // TAble Number ID
                 $sth->bindValue(':date' , $UnixSt);        //unix timestamp 
@@ -40,7 +48,7 @@ class Auto_Add_Event_Every_Day  {
 				
 				//Start INSERT (from function StartBooking())---------
                 $sth2 = $conn ->prepare("INSERT INTO Hall_Events(ev_name, ev_venueHall_id, ev_price, ev_date,  ev_start_time ) VALUES (:event, :hall, :price, :date, :startTime) ");
-                $sth2->bindValue(':event', 'Ed Rush & Optical');   //name of event
+                $sth2->bindValue(':event', $randomArtists[1] );   //name of event 'Ed Rush & Optical'
                 $sth2->bindValue(':hall' ,  2);             // the id of ConcertHall in table Hall_List_of_Venues
                 $sth2->bindValue(':price',  23);            // TAble Number ID
                 $sth2->bindValue(':date' , $UnixSt);        //unix timestamp
@@ -50,7 +58,7 @@ class Auto_Add_Event_Every_Day  {
 				
 				//Start INSERT (from function StartBooking())---------
                 $sth3 = $conn ->prepare("INSERT INTO Hall_Events(ev_name, ev_venueHall_id, ev_price, ev_date,  ev_start_time ) VALUES (:event, :hall, :price, :date, :startTime) ");
-                $sth3->bindValue(':event', 'BSE');   //name of event
+                $sth3->bindValue(':event', $randomArtists[2] );   //name of event 'BSE'
                 $sth3->bindValue(':hall' ,  3);             // the id of ConcertHall in table Hall_List_of_Venues
                 $sth3->bindValue(':price',  44);            // TAble Number ID
                 $sth3->bindValue(':date' , $UnixSt);        //unix timestamp
