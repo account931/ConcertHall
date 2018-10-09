@@ -1,10 +1,12 @@
-ConcertHall:
+Concert Hall
 How it works:
-
 #Works on 3 Sql DBs: Hall_Events(keeps all events with UnixTime, name, venueId(used as foreign key in Inner Join)),  Hall_Scheme_List_of_Venues (keeps venue name,scheme (rows,columns)), Hall_Free_taken_seats (keeps places that are taken,(along with UnixTime, venueId(foreign key for Inner),eventId(forign key))).
-On zzz host DBs are located in account " account931".
+On zzz host DBs are located in account " account931"
 
-#onLoad function  {get_ajax_Events_List_From_SQL()} sents ajax to ajax_php/myConcert_Get_Events.php-> Select_Events Class.php, which SELECT all events with UnixTime greater than today. SELECT uses INNER JOIN on DB Hall_Scheme_List_of_Venues to get VENUE NAME.
+#onLoad function  {get_ajax_Events_List_From_SQL()} sents ajax to ajax_php/myConcert_Get_Events.php-> Select_Events Class.php, which SELECT all events with UnixTime greater than today.
+When creating all Events list in ajax {success}, we assign each event a unique id="eventName_UnixTime_VenueId"(e.g "Ed Rush_087775600_1"). As some Events name (like Ed Rush) may contain backspace, whicch is not allowed in id, we encode/decode it (checks if there is any blankspace in EventName, replace it with "/" while assigning Ids and decode (replace "/" with blankspace while html-ing id (i.e Event name) to div.
+
+ FALSE!!! = > {SELECT uses INNER JOIN on DB Hall_Scheme_List_of_Venues to get VENUE NAME.} = FALSE
 
 #When u click on any Event in Event list (class="event"), it triggers function {showRelevantVenueHall_withRelevantEvent(this.id)}, which runs function  {get_ajax_VenueHall_Seats_Scheme_From_SQL(idValues[2])};//passes Venue ID as arg (i.e arg is {this.id)}. This function  includes 3 function inside (checkSeatsInRowsValueInput(x, z) + buildHallSeats(x, z, getHeight) + calc_AllSeatsAmount_and_show_EventHeaderInfo(x,z,data)}.
 
@@ -18,13 +20,9 @@ If 3rd arg is not set (i.e in custom form), NULL is used as arg.
 #U can not click on a .taken class (It onlu returns alert (Taken'')). If u click on .free class ,  script opens BS modal window (buyTicket window) with event details + inputs that suggests user to print his name/email.
 If user compiles, script sends ajax to $$$ to INSERT record to DB {Hall_Free_taken_seats}.  $$$$ Php makes sure the place is really free (SELECT returns NULL), then generates UUD (unique ticket number), checks if this UUD is not in DB and makes INSERT. After Js renew the function {get_ajax_VenueHall_Seats_Scheme_From_SQL(idValues[2])}; to display updated hall seats.
 
-
 #Function  unix_to_normal(unixZ) //convert SQL Event UnixStamp to normal date {new Date(Unix * 1000)}, then {toLocaleString()} to form {04.10.2018, 23:00:00} and {.slice(0,10)} to leave only 04.10.2018
 
-
 # scrollResults(divName, parent) is an Advanced acroll function.
-
-
 
 #Security: to ensure that INSERT booked seat php script can be reached from authorized js Ajax only:  in ajax ctreate $_SESSION ["token1234"], in php checka if $_SESSION ["token1234"] is set, if TRUE runs INSERT and unset ( $_SESSION ["token1234"]);
 

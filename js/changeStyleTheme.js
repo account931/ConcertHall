@@ -9,6 +9,21 @@ $(document).ready(function(){
 		'https://image.freepik.com/free-vector/yellow-swirls-pattern_1040-37.jpg',  //yellow
 		'https://i.stack.imgur.com/P8Sda.png', //gradient
 		
+		'https://images4-e.ravelrycache.com/uploads/Bonitapatterns/376033957/embossed_blanket_grey_small2.jpg',  //sweater
+		'http://paper-backgrounds.com/textureimages/2013/03/vintage-purple-soft-leather-texture-background-hd.jpg',
+		'http://paper-backgrounds.com/textureimages/2013/03/vintage-purple-soft-leather-texture-background.jpg',
+		'https://cdn.shopify.com/s/files/1/0130/4292/products/embossed_blanket_3_43e4d015-ca79-405c-a36f-6a5cb0e86171_compact.jpg?v=1526701972',
+		'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRR8XOwdaZo6u_6hYtJE_oAL3BfPLYdX8THyX7F0aumc00326vBvQ',
+		'https://www.photohdx.com/images/2016/10/tmb/purple-vintage-paper-texture-twirl-embossed-design.jpg',
+		'https://st.depositphotos.com/2124935/2412/v/950/depositphotos_24124291-stock-illustration-violet-silver-vintage-wallpaper.jpg',
+		'http://wallpaperlayer.com/img/2015/10/purple-vintage-backgrounds-7295-7578-hd-wallpapers.jpg',
+		'http://www.furrygraphics.com/Pictures/JPG/Free-stuff-background-old-paper-G.jpg',  //NOrm
+		'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRTAI-SQXr9uqbaruQCHeyf6cOnr1zAPHf12cDjJGVxhfbK744u', //norm
+		'https://i.pinimg.com/236x/73/24/e9/7324e998854ccc2aacd9ef17da605890.jpg',
+		'https://image.freepik.com/vetores-gratis/fundo-azul-com-linhas-diagonais_1061-353.jpg',  //norm
+		
+	    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRFU1nF9RTkxt2d1pyTcBKoTzIlJYs14qS2-72ksUvcRQ6XwQrisQ',  //red
+		
 	    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQsQf2-zwuStKf6u2V2HE_nCy9rRvk5M8ag043FAenQbOrCXY3tA', //violat blocks
 		//'https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Color_icon_purple.svg/2000px-Color_icon_purple.svg.png', //same in HD
 		//'http://www.sensationalcolor.com/wp-content/uploads/2009/12/purple350x350.jpg', //same HD

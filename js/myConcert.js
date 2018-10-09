@@ -3,7 +3,8 @@ $(document).ready(function(){
 	var z  = [];  //array with horizontal seats in hall, it is array with specific number of Hoz seats for every Vert row. You may add just one digit to this array, the rest will be autocompleted
 	var event;  //Event name from get_ajax_Events_List_From_SQL()
 	var priceX; //price from get_ajax_Events_List_From_SQL()
-	var venueZ, dateTicket, startTimeZ, seatID, dateZ1, nameZ;
+	var venueZ, dateTicket, startTimeZ, seatID, dateZ1, dateZ, nameZ;
+	//var myDateF, myEventF
 	var seatsTakenArray = ["1_2", "1_4", "4_3"]; //taken seats, emulates SQL result for taken seats
 	
 	//sets today to datepicker form value
@@ -82,9 +83,9 @@ $(document).ready(function(){
 				 $('#formUserEmail').html("");  //clears name input
 				  
 				 seatID = this.id; //to pass to modal window
-				 $('#formTicketDate').html(dateTicket ); //sets date from get_ajax_Events_List_From_SQL() 
+				 $('#formTicketDate').html(dateZ /*dateTicket*/ ); //sets date from calc_AllSeatsAmount_and_show_EventHeaderInfo()
 				 $('#formTicketTime').html(startTimeZ);
-				 $('#formEvent').html(event); //sets Event name from get_ajax_Events_List_From_SQL()  
+				 $('#formEvent').html(event); //sets Event name from calc_AllSeatsAmount_and_show_EventHeaderInfo() 
 				 $('#formVenue').html(venueZ); //sets price from get_ajax_Events_List_From_SQL()
 				 $('#formTicketPlace').html("Row: " + this.id.split('_')[0] + " Seat:" + this.id.split('_')[1] + " (" + this.id + ")"); //sets the seat place, gets if from this.id (1_2)
 				 $('#formTicketID').html(generateUUID()); //sets ticket id from function generateUUID()
@@ -457,7 +458,7 @@ function myValidate(thisX, id, regExp, message, e)  //{e} -. it is change event 
 	// **************************************************************************************
     // **************************************************************************************
     //                                                                                     ** 
-	function get_ajax_VenueHall_Seats_Scheme_From_SQL(venueID)
+	function get_ajax_VenueHall_Seats_Scheme_From_SQL(eventID)  //eventID is an ID of clicked event-> (event_unix_venID)
 	{
 		  // send  data  to  PHP handler  ************ 
         $.ajax({
@@ -466,7 +467,7 @@ function myValidate(thisX, id, regExp, message, e)  //{e} -. it is change event 
 			dataType: 'JSON', // without this it returned string(that can be alerted), now it returns object
 			//passing the Venue ID
             data: { 
-			    serverHall_Id: venueID  //hall id (as in SQL DB Hall_Scheme_List_of_Venues)
+			    serverHall_Id: eventID.split("_")[2]  //hall id (as in SQL DB Hall_Scheme_List_of_Venues)
 			},
             success: function(data) {
                 // do something;
@@ -483,7 +484,7 @@ function myValidate(thisX, id, regExp, message, e)  //{e} -. it is change event 
 				checkSeatsInRowsValueInput(x, z); //runs/puts horiz column seats through validation, if they match array and if it's length==x = data[0].place_vert_column
 				buildHallSeats(x, z, getHeight); //draw a Relevant hall
 				
-				calc_AllSeatsAmount_and_show_EventHeaderInfo(x,z,data);  // //args(input1_Vert, input2Array_Horiz, ajax_data)   //data must have for visibility
+				calc_AllSeatsAmount_and_show_EventHeaderInfo(x,z,data, eventID);  // //args(input1_Vert, input2Array_Horiz, ajax_data)   //data must have for visibility
 			
 			   
             },  //end success
@@ -546,8 +547,16 @@ function myValidate(thisX, id, regExp, message, e)  //{e} -. it is change event 
 					}
 				
               	for(i = 0; i < data.length; i++){
+					
+					//encode event name, if event name has blankspace (i.e "Ed Rush") change it to ("Ed:Rush") to have no blankspace in id
+					if(data[i].ev_name.search(" ") > -1){ //if Event has blankspace 
+						eventEncoded = data[i].ev_name.split(' ').join(':'); //change all blankspaces to ":"
+					} else {
+						eventEncoded = data[i].ev_name; //without changes
+					}
+					
 					//ID for event to use in SQL, i.e => LTJ Bukhem_1538683200_1 =>{eventName(from DB Hall_Events)_Unix(from DB Hall_Events)_venueID(from DB Hall_Scheme_List_of_Venues)}
-					var idZ = data[i].ev_name + "_" + data[i].ev_date + "_" + data[i].place_id;  //form the id of each event, contains id = 'date_unix_venueID'
+					var idZ = eventEncoded + "_" + data[i].ev_date + "_" + data[i].place_id;  //form the id of each event, contains id = 'date_unix_venueID'
 					
 					//form the final text with Upcoming events
 					eventsText = eventsText + "<div id='" + idZ + "' class='row event'>" + 
@@ -587,7 +596,7 @@ function myValidate(thisX, id, regExp, message, e)  //{e} -. it is change event 
 	// **************************************************************************************
     // **************************************************************************************
     //                                                                                     ** 
-	function calc_AllSeatsAmount_and_show_EventHeaderInfo(xx, zz, data)  //args(input1_Vert, input2Array_Horiz, ajax_data)
+	function calc_AllSeatsAmount_and_show_EventHeaderInfo(xx, zz, data, eventIDX)  //args(input1_Vert, input2Array_Horiz, ajax_data, id od clicked Event(event_unix_venID))
 	{
 		var nameZ;
 		//if 3rd argument is NULL(i.e not used in NON-AJAX, when there is no data)
@@ -598,9 +607,17 @@ function myValidate(thisX, id, regExp, message, e)  //{e} -. it is change event 
 			startTimeZ = "Your Time";
 		} else {
 			nameZ = data[0].place_name; //gets the Venue name from ajax SQL, from functon {get_ajax_VenueHall_Seats_Scheme_From_SQL(venueID)}
-			event = data[0].ev_name; //gets Event name from ajax data
-			dateZ1 = data[0].ev_date; //gets Event data from ajax data
-			dateZ = unix_to_normal(dateZ1); //new Date(dateZ * 1000).toLocaleString().slice(0,10);  // Date of event //convert SQL Event UnixStamp to normal date {new Date(Unix * 1000)}, then {toLocaleString()}  to form {04.10.2018, 23:00:00} and {.slice(0,10)} to leave only 04.10.2018
+			event = eventIDX.split("_")[0]; //data[0].ev_name; //gets Event name from ajax data
+			
+			//decode event name, if event name has ":" (i.e "Ed:Rush") change it to ("Ed Rush"), as we encoded it for id to have no blankspace
+			if(event.search(":") > -1){ //if Event has ":"
+			   event = event.split(':').join(' ');  //repalce all ":" with blankspace
+			} else {
+			    event = event; //no changes
+			}
+			
+			dateZ1 = eventIDX.split("_")[1]; //data[0].ev_date; //gets Event data from ajax data
+			dateZ = unix_to_normal(eventIDX.split("_")[1]); //new Date(dateZ * 1000).toLocaleString().slice(0,10);  // Date of event //convert SQL Event UnixStamp to normal date {new Date(Unix * 1000)}, then {toLocaleString()}  to form {04.10.2018, 23:00:00} and {.slice(0,10)} to leave only 04.10.2018
 		    startTimeZ = data[0].ev_start_time; //start time
 		}
 	
@@ -635,7 +652,7 @@ function myValidate(thisX, id, regExp, message, e)  //{e} -. it is change event 
 		var idValues = passedID.split("_"); //split id to eventName, eventUnix, venueID
 		
 		//draw Venue Hall with seats and relevant Event
-		get_ajax_VenueHall_Seats_Scheme_From_SQL(idValues[2]);//passes Venue ID  //includes 3 function inside (checkSeatsInRowsValueInput(x, z) + buildHallSeats(x, z, getHeight) + calc_AllSeatsAmount_and_show_EventHeaderInfo(x,z,data)}
+		get_ajax_VenueHall_Seats_Scheme_From_SQL(passedID /*idValues[2]*/);//passes as arg {passedID} = (event_unix_vevID)  //Function itself includes 3 function inside (checkSeatsInRowsValueInput(x, z) + buildHallSeats(x, z, getHeight) + calc_AllSeatsAmount_and_show_EventHeaderInfo(x,z,data)}
 	
 	    scrollResults("#hallInfo");
 	
@@ -655,7 +672,7 @@ function myValidate(thisX, id, regExp, message, e)  //{e} -. it is change event 
 	function run_ajax_to_Buy_Ticket()
 	{
 		// gets value from get_ajax_VenueHall_Seats_Scheme_From_SQL(venueID) + calc_AllSeatsAmount_and_show_EventHeaderInfo(xx, zz, data)
-		alert("ajax buy-> " + dateZ1 + " " + event + " " + venueZ  + " " + seatID);
+		alert("ajax buy-> " + dateZ + " " +  " " + dateZ1 + " " +  event + " " + venueZ  + " " + seatID);
 		// send  data  to  PHP handler  ************ 
         $.ajax({
             url: 'ajax_php/myConcert_Buy_Ticket.php',
@@ -665,7 +682,7 @@ function myValidate(thisX, id, regExp, message, e)  //{e} -. it is change event 
             data: { 
 			    serverName:  $('#formUserName').val(),  //passes Name
 				serverEmail: $('#formUserEmail').val(),  //passes Name
-				serverDate: dateZ1,  //passes Unix Date
+				serverDate: dateZ1,  //passes Unix Date!!!!!!
 				serverEvent: event,  //passes event name
 				serverVenue: venueZ,  //passes Venue name
 				serverTicketPlace: seatID,  //passes Venue name
