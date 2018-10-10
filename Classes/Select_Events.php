@@ -14,7 +14,7 @@ class Select_Events  {
         //$hall_ID=$_POST['serverHall_Id'];  // Hall ID
         try {        
             //-----------------
-			// INNER JOIN  STATEMENT -> IT is used, but not Actually needed as we get place.name (Venue id ) from id on clicked Event in all Events List
+			//INNER JOIN IS a must-have as we get place.name by place.id  from a different SQL DB (Hall_Scheme_List_of_Venues)
 			//SELECT ALL Venues whick date is greater than today
             $stmt = $conn->prepare("SELECT ev_name, ev_date, ev_price, ev_start_time, place_name, place_id, place_address FROM  Hall_Events  INNER JOIN    Hall_Scheme_List_of_Venues    on Hall_Events.ev_venueHall_id=Hall_Scheme_List_of_Venues.place_id	WHERE Hall_Events.ev_date >='{$unix}' ORDER BY ev_id ASC ");                    
             //$stmt = $conn->query("SELECT * FROM  Hall_Events WHERE ev_date >='{$unix}'"); //without Inner join
