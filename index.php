@@ -254,7 +254,7 @@ echo $timeZone->getName();
 				  
 		
 		          <!------------- Footer ------------->
-				  <div class="footer navbar-fixed-bottom"> <!--navbar-fixed-bottom  fixxes bootom problem-->
+				  <div class="footer"> <!--navbar-fixed-bottom  fixxes bootom problem-->
 				      Contact: <strong>dimmm931@gmail.com</strong><br>
 					  <?php  echo date("Y"); ?>
 				  </div>

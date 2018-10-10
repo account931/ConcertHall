@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Хост: 127.0.0.1:3306
--- Час створення: Жов 04 2018 р., 17:37
+-- Час створення: Жов 10 2018 р., 16:50
 -- Версія сервера: 5.5.28-log
 -- Версія PHP: 5.4.8
 
@@ -28,14 +28,18 @@ SET time_zone = "+00:00";
 
 CREATE TABLE IF NOT EXISTS `Hall_Free_taken_seats` (
   `fts_id` int(11) NOT NULL AUTO_INCREMENT,
-  `fts_venue_id` int(11) NOT NULL,
+  `fts_venue_id` varchar(77) NOT NULL,
   `fts_event_name` varchar(77) NOT NULL,
-  `fts_unix_date` datetime NOT NULL,
+  `fts_unix_date` int(88) NOT NULL,
+  `fts_dateNormal` varchar(44) NOT NULL,
+  `fts_start_time` varchar(44) NOT NULL,
   `fts_booked_place` varchar(22) NOT NULL,
   `fts_booker_name` varchar(77) NOT NULL,
+  `fts_booker_email` varchar(77) NOT NULL,
   `fts_place_price` float NOT NULL,
+  `fts_uuid` varchar(122) NOT NULL,
   PRIMARY KEY (`fts_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=9 ;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
