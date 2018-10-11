@@ -80,7 +80,7 @@ $(document).ready(function(){
 			 //if(confirm ("Buy ticket " + this.id + " ?")){
 				 $("#myModalZ").modal("show"); //show ticket order form
 				  
-				 $('#formUserName').html("");  //clears name input
+				 $('#formUserName').val("");  //clears name input
 				 $('#formUserEmail').html("");  //clears name input
 				  
 				 seatID = this.id; //to pass to modal window
@@ -112,7 +112,6 @@ $(document).ready(function(){
 			 return false;
 		 } else {
 			 alert("Running Ajax INSERT-> place(id), date, venue, name. " + seatID);
-			 $("#myModalZ").modal("hide");
 			 
 			 // function send ajax to buy Ticket (INSERT to DB {Hall_Free_taken_seats})
 			 run_ajax_to_Buy_Ticket();
@@ -359,10 +358,16 @@ var email_regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i;  //email t
 // **************************************************************************************
 //                                                                                     ** 
 
-//OnChange value in input 2()-----------
+//OnChange value in input 2( Horiz Seats), RegExp accepts only a digit or digits followed by "," digit-----------
 //$(document).on("change", '.checkRegExp', function(e) {  //must have {e} to detect event //newly generated
 $(".checkRegExp" ).on('input', function(e) {   
-      myValidate($(this), this.id, RegExp_Template, '   only digits, separated by comma, no spaces, last input can not be comma', e);   //{e} new must have arg, otherwise not visible
+      myValidate($(this), this.id, RegExp_Template, 'createHall', '   only digits, separated by comma, no spaces, last input can not be comma', e);   //{e} new must have arg, otherwise not visible
+});
+
+//OnChange value in Email field in "Buy ticket modal window, accepts E-mail only"-----------
+$("#formUserEmail" ).on('input', function(e) {   
+      myValidate($(this), this.id, email_regex, 'agreedAddToSQL', '   not e-mail ', e);   //{e} new must have arg, otherwise not visible
+	 //args($this, $this.id, RegExp, button to disable, message to show, event)
 });
  
 //End  OnChange-------
@@ -381,7 +386,8 @@ $(".checkRegExp" ).on('input', function(e) {
 // **************************************************************************************
 // **************************************************************************************
 //                                                                                     ** 
-function myValidate(thisX, id, regExp, message, e)  //{e} -. it is change event from {$(document).on("change", '.fileCheck', function(e) { }
+function myValidate(thisX, id, regExp, butttonToDisable,  message, e)  //{e} -. it is change event from {$(document).on("change", '.fileCheck', function(e) { }
+//args($this, $this.id, RegExp, button to disable, message to show, event)
 {
 
      //if (e.target.files[0].name !=='')
@@ -398,20 +404,20 @@ function myValidate(thisX, id, regExp, message, e)  //{e} -. it is change event 
         //if  REgEXp  match
         if (idm/*fileName*/.match(regExp)){
             thisX.prevAll(".sp:first").html('Correct');// erase  error  message //$("#" +id).prevAll(".sp:first").html('Correct');// erase  error  message
-            $('#createHall')/*$(':input[type="submit"]')*/.prop('disabled', false); //enable  button  //$(':input[type="button"]').prop('disabled', false);
-            $('#createHall').html('Create');
+            $("#" + butttonToDisable)/*$(':input[type="submit"]')*/.prop('disabled', false); //enable  button  //$(':input[type="button"]').prop('disabled', false);
+            $("#" + butttonToDisable).html('OK');
                       
          } else {  //if RegExp not  match
              thisX.prevAll(".sp:first").html(message);   //$("#" +id).prevAll(".sp:first").html(message);   //finds the 1st prev span
-             $('#createHall')/*$(':input[type="submit"]')*/.prop('disabled', true);
-             $('#createHall').html/*val*/('Disabled');
+             $("#" + butttonToDisable)/*$(':input[type="submit"]')*/.prop('disabled', true);
+             $("#" + butttonToDisable).html/*val*/('Disabled');
          }
      //  end if ($("#" +id).val()!==''){
    
      } else {//if  the input is empty, set no  error to span
          thisX.prevAll(".sp:first").html('');
 		 $('#createHall').prop('disabled', false);
-         $('#btnSubmit').html('Create');   
+         $('#btnSubmit').html('OK');   
      } 
 }
   
@@ -602,7 +608,7 @@ function myValidate(thisX, id, regExp, message, e)  //{e} -. it is change event 
 	// **************************************************************************************
     // **************************************************************************************
     //                                                                                     ** 
-	function calc_AllSeatsAmount_and_show_EventHeaderInfo(xx, zz, data, eventIDX)  //args(input1_Vert, input2Array_Horiz, ajax_data, id od clicked Event(event_unix_venID))
+	function calc_AllSeatsAmount_and_show_EventHeaderInfo(xx, zz, data, eventIDX)  //args(input1_Vert, input2Array_Horiz, ajax_data, id of clicked Event->((eventName_unix_venID_evTime_evPrice), i.e (Bukem_86006600_2_25_19.30)))
 	{
 		var nameLocal;
 		//if 3rd argument is NULL(i.e not used in NON-AJAX, when there is no data)
@@ -680,6 +686,8 @@ function myValidate(thisX, id, regExp, message, e)  //{e} -. it is change event 
     //                                                                                     ** 
 	function run_ajax_to_Buy_Ticket()
 	{
+		$("#myModalZ").modal("hide");  //hide "BUY TICKET" modal window
+		
 		// gets value from get_ajax_VenueHall_Seats_Scheme_From_SQL(venueID) + calc_AllSeatsAmount_and_show_EventHeaderInfo(xx, zz, data)
 		alert("ajax buy-> " + dateNormal + " " +  " " + dateUnix + " " +  event + " " + venueZ  + " " + seatID);
 		
@@ -687,7 +695,7 @@ function myValidate(thisX, id, regExp, message, e)  //{e} -. it is change event 
         $.ajax({
             url: 'ajax_php/myConcert_Buy_Ticket.php',
             type: 'POST',
-			dataType: 'text', // without this it returned string(that can be alerted), now it returns object
+			dataType: 'JSON', // without this it returned string(that can be alerted), now it returns object
 			//passing the city
             data: { 
 			    serverName:  $('#formUserName').val(),  //passes Name
@@ -702,9 +710,10 @@ function myValidate(thisX, id, regExp, message, e)  //{e} -. it is change event 
 			},
             success: function(data) {
                 // do something;
-				alert(data);
+				alert(JSON.stringify(data, null, 4));
+				console.log(JSON.stringify(data, null, 4));
 				showRelevantVenueHall_withRelevantEvent(id_eventID); //renew taken seats scheme after user booked a new seat //id_eventID is set in showRelevantVenueHall_withRelevantEvent itself
-                
+                display_PDF_Ticket(data); //show a ready ticket to user with a button to download PDF ticket
 			   
             },  //end success
 			error: function (error) {
@@ -719,6 +728,112 @@ function myValidate(thisX, id, regExp, message, e)  //{e} -. it is change event 
 	// **                                                                                  **
     // **************************************************************************************
     // **************************************************************************************
+	
+	
+	
+	
+	
+	
+	
+		
+	// function to show a ready ticket to user with a button to download PDF ticket
+	// **************************************************************************************
+    // **************************************************************************************
+    //                                                                                     ** 
+	function display_PDF_Ticket(ajax_data)
+	{
+		
+	    $("#myModal_PDF_Ticket").modal("show"); //show modal with ready PDF TICKET
+		
+		var barCodeLink = "https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=" + ajax_data.UUID + "&choe=UTF-8"; //form the link to QR API
+		// set <img> {crossOrigin='Anonymous'} is a must FIX
+		var barCode =  "<span class='badge'><img crossOrigin='Anonymous' id='saveImg' src=" + barCodeLink  + " title=" + ajax_data.UUID + " alt='barcode' /></span>";  //set the link to <img>
+		
+		
+		var pdfContentText = "<h4><i class='fa fa-address-book-o'></i>&nbsp" + ajax_data.UserName + "</h4>";
+		pdfContentText+=  "<p><i class='fa fa-envelope-o'></i>&nbsp" + ajax_data.UserMail + "</p>" +
+		                  "<p><i class='fa fa-external-link-square'></i>&nbsp" + ajax_data.EventName + "</p>" +
+						  "<p><i class='fa fa-map-marker'></i>&nbsp" + ajax_data.VenueName + "</p>" +
+						  "<p><i class='fa fa-calendar-check-o'></i>&nbsp" + ajax_data.DateNorm + "</p>" +
+						  "<p><i class='fa fa-clock-o'></i>&nbsp" + ajax_data.TimeStartt + "</p>" +
+						  "<p><i class='fa fa-fire'></i>&nbsp" + ajax_data.TicketPlace + "</p>" +
+						  "<p><i class='fa fa-euro'></i>&nbsp" + ajax_data.Price + " Euro</p>" +
+						  "<p><i class='fa fa-codepen'></i>&nbsp" + ajax_data.UUID + " </p>" +
+						  barCode;
+		
+		$("#pdf_content").html(pdfContentText);
+	}
+	
+	
+	
+	
+	
+	//prompts to print
+	$("#btnPrintPDF").click(function() { 
+	     var divContents = $("#myModal_PDF_Ticket").html();
+            var printWindow = window.open('', '', 'height=400,width=800');
+            printWindow.document.write('<html><head><title>DIV Contents</title>');
+            printWindow.document.write('</head><body >');
+            printWindow.document.write(divContents);
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
+            printWindow.print();
+			
+        });
+	
+	
+	//prompts to save as img
+	// Save QR as JPEG image //https://github.com/eligrey/FileSaver.js, uses a canvas id="hiddenViewportCanvas" for saving QR <img> with FileSaver.js Library, because Filesaver.js can only save visible canvases, so we 1stly draw a received QR to this canvas and then hide it with JS
+	// **************************************************************************************
+    // **************************************************************************************
+    //                                                                                     ** 
+	
+	$(document).on("click", '#btnSavePDF', function() {   // this  click  is  used  to   react  to  newly generated cicles;
+	   if (confirm("Sure to download the image?\n Please notice, it may not work in some browsers, in this case use right-click save.")) {
+		   
+		   
+		   var circle2 = document.createElement("canvas");
+		   circle2.id = "hiddenViewportCanvas"; //assign  id; 
+		   document.body.appendChild(circle2);
+		   
+		   
+		   //to save image, first we have to convert it to canvas and then we can save it with FileSaver.js 
+		   var cnvs = document.getElementById('hiddenViewportCanvas'); //gets hidden canvas
+           var ctx = cnvs.getContext('2d');
+           var mirror = document.getElementById('myModal_PDF_Ticket'); // received Div to save
+
+           //cnvs.width = mirror.width = window.innerWidth;
+            //cnvs.height = mirror.height = window.innerHeight;
+		   
+
+		   //var canvas = document.getElementById("saveImg");//, ctx = canvas.getContext("2d");
+		   
+		   //draw qr <img> to canvas
+            ctx.drawImage(mirror,2,2); //ctx.drawImage(myImage, margin-left,margin-top)
+
+            try{  //use try catch to show alert, when download is not working in samsung browser
+               // Use FileSaver.js
+               cnvs.toBlob(function(blob) {
+                   saveAs(blob, "myTicket.jpeg");
+               });
+		   
+		       //hide  #hiddenViewportCanvas from view, as if set hidden from beginning, u won't be able to save img from it
+	           cnvs.style.display="none";
+			} catch(ee) {
+				alert("Browser is not supported, use updated browser.");
+				cnvs.style.display="none";
+			}
+	   } 
+	   
+	   
+	 });
+	
+	// 
+	// **                                                                                  **
+    // **************************************************************************************
+    // **************************************************************************************
+	// Save QR as image //https://github.com/eligrey/FileSaver.js
+	
 	
 	
 	
@@ -752,14 +867,16 @@ function myValidate(thisX, id, regExp, message, e)  //{e} -. it is change event 
 			},
             success: function(data) {
                 // do something;
-				alert("Taken places to add to seatsTakenArray[]-> " + data.length);
+				//alert("Taken places to add to seatsTakenArray[]-> " + data.length);
+				$("#err").append("<br>Taken places to add to seatsTakenArray[]-> " + data.length); //instead of alert
 				
 				//adds taken places to array seatsTakenArray[], which is used in buildHallSeats(vertRows, arrayHorizont, callbackZ)
 				seatsTakenArray = []; //clears prev array
 				for(j = 0; j < data.length; j++){
 					seatsTakenArray.push(data[j].fts_booked_place);
 				}
-				alert("seatsTakenArray[] " + seatsTakenArray);
+				//alert("seatsTakenArray[] " + seatsTakenArray);
+				$("#err").append("<br>seatsTakenArray[] " + seatsTakenArray); //instead of alert
 			    
 				
             },  //end success
@@ -786,6 +903,7 @@ function myValidate(thisX, id, regExp, message, e)  //{e} -. it is change event 
 	// **************************************************************************************
     // **************************************************************************************
     //                                                                                     ** 
+	
 	function unix_to_normal(unixZ)    //convert SQL Event UnixStamp to normal date {new Date(Unix * 1000)}, then {toLocaleString()}  to form {04.10.2018, 23:00:00} and {.slice(0,10)} to leave only 04.10.2018
 	{
 		return new Date(unixZ * 1000).toLocaleString().slice(0,10);
@@ -804,7 +922,7 @@ function myValidate(thisX, id, regExp, message, e)  //{e} -. it is change event 
       
 	
 	
-	// onFocus in custom form in  mobile version scroll the page to input
+	// onFocus in custom form (VertRows, HorizColumn) in  mobile version scroll the page to input
 	$( "#vertcRows" ).focus(function() {
         if(screen.width <= 640){ 
 	       scrollResults("#vertcRows"); //scroll the page down to currencies results  //#currencyResult
@@ -814,6 +932,16 @@ function myValidate(thisX, id, regExp, message, e)  //{e} -. it is change event 
 	 
 	   
 
+	   
+	   
+	   
+	   
+	   
+	   
+	   
+	   
+	   
+	   
 	   
 	   
 	   

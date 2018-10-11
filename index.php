@@ -31,6 +31,7 @@ echo $timeZone->getName();
 	  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> <!-- Fa-fa library-->
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
       <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	  <script src="Library/FileSaver_libary/FileSaver.js"></script><!-- JS FileSaver library--> <!-- https://github.com/eligrey/FileSaver.js-->
 	 
       <link rel="stylesheet" type="text/css" media="all" href="css/myConcert.css">
 	  
@@ -192,7 +193,7 @@ echo $timeZone->getName();
 				  
 				  
 				  
-				  <!-----------------  Modal window with info------------------------------>
+				  <!-----------------  Modal window "Buy Ticket" with info and fields to put Name and E-MAil------------------------------>
       <div id="myModalZ" class="modal fade" role="dialog">
           <div class="modal-dialog">
           <!-- Modal content-->
@@ -209,6 +210,7 @@ echo $timeZone->getName();
                             <input type="text" class="form-control inputZ" id="formUserName" required/>
 							<br>
 							<label for="formUserEmail">Your E-mail:</label>
+							<span class="error_req"> * </span> <span class="sp"  id =""> </span><!-- Reg exp Validation -->
                             <input type="text" class="form-control inputZ" id="formUserEmail" required/>
 							<br>
 							<label for="formTicketDate">Ticket Date:</label>
@@ -243,14 +245,47 @@ echo $timeZone->getName();
 
          </div>
      </div>
-      <!-----------------  END Modal window with info---------------------------->
+      <!-----------------  END Modal window "Buy Ticket" with info and fields to put Name and E-MAil---------------------------->
 				  
 				  
 				  
 				  
 				  
 				  
+	 <!-----------------  Modal window with Ready PDF Ticket(is shown when a user has purchased the Ticket)----------------------------->
+      <div id="myModal_PDF_Ticket" class="modal fade" role="dialog">
+          <div class="modal-dialog">
+          <!-- Modal content-->
+              <div class="modal-content">
+                  <div class="modal-header">
+                       <button type="button" class="close" data-dismiss="modal">&times;</button>
+                       <h4 class="modal-title">Yout Ticket </h4>
+                  </div>
+                  <div class="modal-body" id="pdf_content">
+				     <!-- here goes Ticket content-->
+                  </div>
+                  <div class="modal-footer">
+				       <button type="button" class="btn btn-default" id="btnPrintPDF">Print PDF</button>
+					   <button type="button" class="btn btn-default" id="btnSavePDF">Save</button>
+                       <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  </div>
+              </div>
+
+         </div>
+     </div>
+      <!-----------------  END Modal window with Ready PDF Ticket(is shown when a user has purchased the Ticket)---------------------------->
 				  
+				  
+				  
+				  
+    	           <!-- This is a auto hidden canvas, used for saveing qr image to JPEG-->
+				   <!--used for saving QR <img> with FileSaver.js because Filesaver.js can only save visible canvases, so we 1stly draw a received QR to this canvas and then hide it with js {cnvs.style.display="none";}-->
+				   <canvas id="hiddenViewportCanvas" width="300" height="400" style=""></canvas>
+				   <!-- End  a hidden canvas-->
+				   
+				   
+				   
+				   
 				  
 		
 		          <!------------- Footer ------------->
