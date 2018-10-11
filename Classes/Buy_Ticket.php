@@ -99,7 +99,21 @@ class Buy_Ticket  {
 		   $sth->bindValue(':price',      $_POST['serverPrice'] );
 		   $sth->bindValue(':uuid',       $this->UUID );
            $sth->execute();
-		   echo json_encode('Booked!!! ' . $this->UUID);
+		   
+		   //array with all Ticket info to pass back to ajax {run_ajax_to_Buy_Ticket()} to dispaly ready PDF ticket onSuccess in {display_PDF_Ticket(data);}
+		   $ticketPdfInfo = array( "VenueName"=> $_POST['serverVenue'],
+                 		           "EventName"=> $_POST['serverEvent'], $_POST['serverDate'], 
+								   "DateNorm"=>  $_POST['serverDateNormal'], 
+								   "TimeStartt"=> $_POST['serverStartTime'], 
+								   "TicketPlace"=> $_POST['serverTicketPlace'],  
+								   "UserName"=>  $_POST['serverName'], 
+								   "UserMail"=>  $_POST['serverEmail'], 
+								   "Price"=> $_POST['serverPrice'], 
+								   "UUID"=> $this->UUID );
+									  
+		  
+		   //print_r($ticketPdfInfo);
+		   echo json_encode($ticketPdfInfo);
            //END INSERT (from function ---------
 
 	}
