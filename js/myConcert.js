@@ -768,11 +768,14 @@ function myValidate(thisX, id, regExp, butttonToDisable,  message, e)  //{e} -. 
 	
 	
 	
-	//prompts to print
+	//prompts to save/print a ready Ticket as PDF
+	// **************************************************************************************
+    // **************************************************************************************
+    //                                                                                     **
 	$("#btnPrintPDF").click(function() { 
 	     var divContents = $("#myModal_PDF_Ticket").html();
             var printWindow = window.open('', '', 'height=400,width=800');
-            printWindow.document.write('<html><head><title>DIV Contents</title>');
+            printWindow.document.write('<html><head><title>Ticket</title>');
             printWindow.document.write('</head><body >');
             printWindow.document.write(divContents);
             printWindow.document.write('</body></html>');
@@ -780,21 +783,37 @@ function myValidate(thisX, id, regExp, butttonToDisable,  message, e)  //{e} -. 
             printWindow.print();
 			
         });
+		
+		
 	
+	  
 	
-	//prompts to save as img
-	// Save QR as JPEG image //https://github.com/eligrey/FileSaver.js, uses a canvas id="hiddenViewportCanvas" for saving QR <img> with FileSaver.js Library, because Filesaver.js can only save visible canvases, so we 1stly draw a received QR to this canvas and then hide it with JS
+	//Save ready Ticket Div as an img. Uses Library/FileSaver.js + Library/dom-to-image.min.js
+	// Save ready Ticket Div as JPEG image //https://github.com/eligrey/FileSaver.js, uses a canvas id="hiddenViewportCanvas" for saving QR <img> with FileSaver.js Library, because Filesaver.js can only save visible canvases, so we 1stly draw a received QR to this canvas and then hide it with JS
 	// **************************************************************************************
     // **************************************************************************************
     //                                                                                     ** 
 	
-	$(document).on("click", '#btnSavePDF', function() {   // this  click  is  used  to   react  to  newly generated cicles;
+	$(document).on("click", '#btnSavePDF_to_IMG', function() {   // this  click  is  used  to   react  to  newly generated cicles;
 	   if (confirm("Sure to download the image?\n Please notice, it may not work in some browsers, in this case use right-click save.")) {
 		   
 		   
-		   var circle2 = document.createElement("canvas");
-		   circle2.id = "hiddenViewportCanvas"; //assign  id; 
-		   document.body.appendChild(circle2);
+		   var node = document.getElementById('myModal_PDF_Ticket');
+           //var btn = document.getElementById('btnSavePDF_to_IMG');
+           //btn.onclick = function() {
+               //node.innerHTML = "I'm an image now."
+               domtoimage.toBlob(document.getElementById('myModal_PDF_Ticket'))
+               .then(function(blob) {
+                   window.saveAs(blob, 'my-ticket.jpeg');
+           });
+           //}
+		   
+		
+		   
+		   /*
+		   //var circle2 = document.createElement("canvas");
+		   //circle2.id = "hiddenViewportCanvas"; //assign  id; 
+		   //document.body.appendChild(circle2);
 		   
 		   
 		   //to save image, first we have to convert it to canvas and then we can save it with FileSaver.js 
@@ -823,8 +842,9 @@ function myValidate(thisX, id, regExp, butttonToDisable,  message, e)  //{e} -. 
 				alert("Browser is not supported, use updated browser.");
 				cnvs.style.display="none";
 			}
-	   } 
-	   
+		*/
+	   } 	
+      	   
 	   
 	 });
 	

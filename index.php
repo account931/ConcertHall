@@ -32,6 +32,7 @@ echo $timeZone->getName();
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
       <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	  <script src="Library/FileSaver_libary/FileSaver.js"></script><!-- JS FileSaver library--> <!-- https://github.com/eligrey/FileSaver.js-->
+	  <script src="Library/Dom_Image_library/dom-to-image.min.js"></script><!-- JS Dom to image library, used with FileSaver.js to save Ticket Div to img--> <!-- https://github.com/tsayen/dom-to-image-->
 	 
       <link rel="stylesheet" type="text/css" media="all" href="css/myConcert.css">
 	  
@@ -266,7 +267,7 @@ echo $timeZone->getName();
                   </div>
                   <div class="modal-footer">
 				       <button type="button" class="btn btn-default" id="btnPrintPDF">Print PDF</button>
-					   <button type="button" class="btn btn-default" id="btnSavePDF">Save</button>
+					   <button type="button" class="btn btn-default" id="btnSavePDF_to_IMG">Save img</button>
                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                   </div>
               </div>

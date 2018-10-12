@@ -55,10 +55,14 @@ If user compiles, "Buy" button triggers {function run_ajax_to_Buy_Ticket()},
 which sends ajax to {ajax_php/myConcert_Buy_Ticket.php->Classes/Buy_Ticket.php} to INSERT record to DB {Hall_Free_taken_seats}.  
 Classes/Buy_Ticket.php generates UUID(unique ticket number), make sure it is unique(if not in DB already),
 then makes sure the place is really free (SELECT returns NULL) and makes INSERT. 
-After Js renew the function {showRelevantVenueHall_withRelevantEvent(id_eventID)}; to display updated taken venue seats. 
+After it, Js renew the function {showRelevantVenueHall_withRelevantEvent(id_eventID)}; to display updated taken venue seats. 
 Arg {id_eventID} is set in showRelevantVenueHall_withRelevantEvent itself.
 {id_eventID} is a Clicked EventId=>(eventName_unix_venID_evTime_evPrice), i.e (Bukem_86006600_2_25_19.30))
 
+  #Additionally, function {run_ajax_to_Buy_Ticket()} on ajax SUCCESS runs function {display_PDF_Ticket(ajax_data)}, 
+which shows in a new modal a ready Ticket with data from {json_encode($ticketPdfInfo) in Classes/Buy_Ticket.php} and + QR +buttons "Save PDF", "Save as img"
+Saving as image button(id="btnSavePDF_to_IMG) uses Library/FileSaver.js + Library/dom-to-image.min.js
+Saving as PDF button(id="btnPrintPDF) just prompts printing which requires prev saving th pdf.
 
 
   #function {run_ajax_to_Get_Taken_Seats()}  sends ajax to {ajax_php/myConcert_Get_BookedSeats.php->Classes/Select_Booked_Seats.php}
@@ -68,7 +72,8 @@ Function {run_ajax_to_Get_Taken_Seats()} is used as callback in {function buildH
 to make sure that firstly we get taken seats array and then start building the Scheme based on taken places array.
 Additionally, Function {run_ajax_to_Get_Taken_Seats()} is set to {async:false} not to overlap the buildHallSeats().
  
- 
+
+ # 
  
  
   #Function  unix_to_normal(unixZ) //convert SQL Event UnixStamp to normal date {new Date(Unix * 1000)}, 
