@@ -84,6 +84,8 @@ class Buy_Ticket  {
     public function insert_Ticket() 
 	{
            global $conn; // global from $singeltone=ConnectDB::getInstance();
+		   
+		    $status = "FAIL"; //by default is FAIl, if INSERT is Ok it will change to "OK"
 		  
 		   //Start INSERT (from  ---------
            $sth = $conn ->prepare("INSERT INTO Hall_Free_taken_seats(fts_venue_id, fts_event_name, fts_unix_date, fts_dateNormal, fts_start_time, fts_booked_place, fts_booker_name, fts_booker_email, fts_place_price, fts_uuid ) VALUES (:venue, :event, :unixTime, :dateNormal, :startTime, :seatPlace, :bookerName, :bookerEmail, :price, :uuid) ");
@@ -100,6 +102,8 @@ class Buy_Ticket  {
 		   $sth->bindValue(':uuid',       $this->UUID );
            $sth->execute();
 		   
+		   $status = "OK";
+		   
 		   //array with all Ticket info to pass back to ajax {run_ajax_to_Buy_Ticket()} to dispaly ready PDF ticket onSuccess in {display_PDF_Ticket(data);}
 		   $ticketPdfInfo = array( "VenueName"=> $_POST['serverVenue'],
                  		           "EventName"=> $_POST['serverEvent'], $_POST['serverDate'], 
@@ -109,7 +113,8 @@ class Buy_Ticket  {
 								   "UserName"=>  $_POST['serverName'], 
 								   "UserMail"=>  $_POST['serverEmail'], 
 								   "Price"=> $_POST['serverPrice'], 
-								   "UUID"=> $this->UUID );
+								   "UUID"=> $this->UUID, 
+								   "Status" => $status );  //status for SQL INSERT(if was successfull)
 									  
 		  
 		   //print_r($ticketPdfInfo);

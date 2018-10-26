@@ -22,9 +22,16 @@ class Auto_Add_Event_Every_Day  {
 		//$date = strtotime("+1 day");  //time ERROR fixed with setting in index.php {date_default_timezone_set("Europe/Kiev")} //mega Error in UnixStamp Diffrenece on LocalHost and Server was due (local was Moscow, server zzz - Kyiv)
 		$UnixSt = strtotime(date('d-m-Y'/*,$date */));  //gets current day  //echo date('m-d-y',$date)
 		
-		$artistsArray = ['LTJ Bukhem', 'Ed Rush & Optical', 'BSE', 'Noisia', 'Concord Dawn', 'TeeBee', 'Calyx', 'Raiden', 'Technical Intch', 'Spor', 'Corrupt Souls', 'Klute', 'Spectrasoul', 'Submerged', 'Pendulum', 'High Contrast', 'Chase & Status', 'Kosheen', 'Black Sun Empire', 'Sub Focus', 'Roni Size', 'Photek', 'Future Prophecies', 'Evol Intent', 'Enduser', 'Nu:Tone', 'Dieselboy', 'Camo & Krooked', 'LimeWax', 'Omni Trio', 'State Of Mind', 'Dom & Roland', 'Phace', 'The Upbeats', 'Bad Company UK', 'Kryptic Minds & Leon Switch', 'D.Kay', 'Chris.SU'];
+		$artistsArray = array('LTJ Bukhem', 'Ed Rush & Optical', 'BSE', 'Noisia', 'Concord Dawn', 
+		    'TeeBee', 'Calyx', 'Raiden', 'Technical Intch', 'Spor', 'Corrupt Souls', 'Klute', 'Spectrasoul', 
+			'Submerged', 'Pendulum', 'High Contrast', 'Chase & Status', 'Kosheen', 'Black Sun Empire', 'Sub Focus', 
+			'Roni Size', 'Photek', 'Future Prophecies', 'Evol Intent', 'Enduser', 'Nu:Tone', 'Dieselboy', 
+			'Camo & Krooked', 'LimeWax', 'Omni Trio', 'State Of Mind', 'Dom & Roland', 'Phace', 'The Upbeats', 
+			'Bad Company UK', 'Kryptic Minds & Leon Switch', 'D.Kay', 'Chris.SU', 'Mefus',
+			'Logistics', 'Photek', 'Technical Itch', 'Mayhem', 'N.Phect', 'Bulletproof');
+			
 		//gets 3 random artist to auto INSERT
-		$randomArtists = [];
+		$randomArtists = array();
 		for ($i = 0; $i < 3; $i++ ){
 			$randomX = $artistsArray[rand(0, count($artistsArray) - 1)];
 			array_push($randomArtists, $randomX);  
