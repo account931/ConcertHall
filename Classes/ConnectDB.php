@@ -68,6 +68,7 @@ try {
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     //echo "</br>Connected successfully to  DataBase _zzz";  //no echoes, as they screw json
     $_POST['connection_flag']='connection_flag_OK';
+    $conn->exec("set names utf8"); //setting UT8 is a must, without it in some browser cyrillyc is corrupted
     }
 catch(PDOException $e)
     {
