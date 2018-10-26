@@ -33,10 +33,15 @@ echo $timeZone->getName();
       <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	  <script src="Library/FileSaver_libary/FileSaver.js"></script><!-- JS FileSaver library--> <!-- https://github.com/eligrey/FileSaver.js-->
 	  <script src="Library/Dom_Image_library/dom-to-image.min.js"></script><!-- JS Dom to image library, used with FileSaver.js to save Ticket Div to img--> <!-- https://github.com/tsayen/dom-to-image-->
+	  
+	  <!-- jsPDF Library ---- https://github.com/MrRio/jsPDF-->
+	  <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.4.1/jspdf.debug.js" integrity="sha384-THVO/sM0mFD9h7dfSndI6TS0PgAGavwKvB5hAxRRvc0o9cPLohB0wb/PTA7LdUHs" crossorigin="anonymous"></script>-->
+      <script src="Library/JS_PDF_library/jspdf.min.js.js"></script> <!-- jsPDF Library --> 
+
 	 
       <link rel="stylesheet" type="text/css" media="all" href="css/myConcert.css">
 	  
-      <script src="js/myConcert.js"></script>         <!-- Core myFacebook API JS-->
+      <script src="js/myConcert.js"></script>         <!-- Core  JS-->
 	  <script src="js/changeStyleTheme.js"></script>   <!-- Change wallpapers,changeStyleTheme JS-->
 	  
 	  
@@ -254,7 +259,7 @@ echo $timeZone->getName();
 				  
 				  
 	 <!-----------------  Modal window with Ready PDF Ticket(is shown when a user has purchased the Ticket)----------------------------->
-      <div id="myModal_PDF_Ticket" class="modal fade" role="dialog">
+      <div id="myModal_PDF_Ticket" class="modal fade modalX" role="dialog">
           <div class="modal-dialog">
           <!-- Modal content-->
               <div class="modal-content">
@@ -269,14 +274,16 @@ echo $timeZone->getName();
 				       <button type="button" class="btn btn-default" id="btnPrintPDF">Print PDF</button>
 					   <button type="button" class="btn btn-default" id="btnSavePDF_to_IMG">Save img</button>
                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					   <br><br><br>
                   </div>
               </div>
 
          </div>
      </div>
       <!-----------------  END Modal window with Ready PDF Ticket(is shown when a user has purchased the Ticket)---------------------------->
-				  
-				  
+		
+    <!---  only for jsPDF Library -->		
+	<div id="editor"></div>		  
 				  
 				  
     	           <!-- This is a auto hidden canvas, used for saveing qr image to JPEG-->

@@ -8,7 +8,33 @@
 	display:inline-block;
 }
 
-.free{background: white;}
+.free{background: white;cursor:pointer;}
+
+
+/*----BS Modal scrolling FIX---*/
+.modal.modalX {
+    overflow-y:scroll;
+}
+
+    /* Important part */
+.modal-dialog{
+    overflow-y: initial !important
+}
+.modal-body{
+    /*max-height: calc(100vh - 200px);*/
+    overflow-y: auto;
+}
+/*----END BS Modal scrolling FIX---*/
+
+
+
+/*----IOS click fix---*/
+.free.close.taken{
+	cursor:pointer;}
+/*----IOS click fix---*/	
+
+	
+.tick-imag{width:6%}
 
 .taken{background:red;}
 

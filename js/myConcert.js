@@ -8,6 +8,9 @@ $(document).ready(function(){
 	
 	var seatsTakenArray = [];//["1_2", "1_4", "4_3"]; //taken seats, emulates SQL result for taken seats
 	
+	//re-scroll to top if u bought a ticket and reload the page(without it it'll display bottom page)
+	scroll_toTop();
+	
 	//sets today to datepicker form value
 	document.getElementById('dateHistorical').valueAsDate = new Date();
 	
@@ -111,7 +114,8 @@ $(document).ready(function(){
 			 alert("Fields 'Name and E-mail' can not be empty");
 			 return false;
 		 } else {
-			 alert("Running Ajax INSERT-> place(id), date, venue, name. " + seatID);
+			 //alert("Running Ajax INSERT-> place(id), date, venue, name. " + seatID);
+			 $("#err").append("<br>Running Ajax INSERT-> place(id), date, venue, name. " + seatID); //instead of alert
 			 
 			 // function send ajax to buy Ticket (INSERT to DB {Hall_Free_taken_seats})
 			 run_ajax_to_Buy_Ticket();
@@ -121,6 +125,15 @@ $(document).ready(function(){
 	
 	
 	
+	
+	// CALENDAR onClick gets SQL event for a selected date in calendar(or greater than date)(same function runs onLoad with today date by default in calendar pick up)
+	// **************************************************************************************
+    // **************************************************************************************
+    // **                                                                                  **
+	 $(document).on("click", '#getDateEvent', function() {   // this  click  is  used  to   react  to  newly generated cicles;
+        get_ajax_Events_List_From_SQL(); 
+		$("#status, #hallInfo, #err").html(""); //clears any prev build seats 
+	 });
 	
 	
 	
@@ -132,7 +145,9 @@ $(document).ready(function(){
 
 	function buildHallSeats(vertRows, arrayHorizont, callbackZ, callbackGetBooked)   //callbackGetBooked ==>function run_ajax_to_Get_Taken_Seats()
 	{
-		callbackGetBooked();  //runs  function run_ajax_to_Get_Taken_Seats()
+		if(callbackGetBooked != null){
+		    callbackGetBooked();  //runs  function run_ajax_to_Get_Taken_Seats()
+		}
 		
 		var coeficient;
 		var styleTakenFree;
@@ -549,6 +564,7 @@ function myValidate(thisX, id, regExp, butttonToDisable,  message, e)  //{e} -. 
             success: function(data) {
                 // do something;
 				
+				
                 alert(data.length + " events " +  JSON.stringify(data, null, 4));
 				
 				var eventsText = '';
@@ -710,11 +726,15 @@ function myValidate(thisX, id, regExp, butttonToDisable,  message, e)  //{e} -. 
 			},
             success: function(data) {
                 // do something;
-				alert(JSON.stringify(data, null, 4));
-				console.log(JSON.stringify(data, null, 4));
-				showRelevantVenueHall_withRelevantEvent(id_eventID); //renew taken seats scheme after user booked a new seat //id_eventID is set in showRelevantVenueHall_withRelevantEvent itself
-                display_PDF_Ticket(data); //show a ready ticket to user with a button to download PDF ticket
-			   
+				if(data.Status == "OK"){ //checks if SQL INSERT was successful and data.Status == "OK", not data.Status == "FAIL"
+				    //alert(JSON.stringify(data, null, 4));
+				    $("#err").append("<br>ticketPdfInfo[] from Buy_Ticket.php " + JSON.stringify(data, null, 4)); //instead of alert
+				    console.log(JSON.stringify(data, null, 4));
+				    showRelevantVenueHall_withRelevantEvent(id_eventID); //renew taken seats scheme after user booked a new seat //id_eventID is set in showRelevantVenueHall_withRelevantEvent itself
+                    display_PDF_Ticket(data); //show a ready ticket to user with a button to download PDF ticket
+				} else {
+					$("#err").append("<br>Buy_Ticket.php CRASHED!!!! data.Status == FAIL "); //instead of alert
+				}
             },  //end success
 			error: function (error) {
 				alert("Ticket was not booked!!! An error occured");
@@ -745,10 +765,23 @@ function myValidate(thisX, id, regExp, butttonToDisable,  message, e)  //{e} -. 
 		
 	    $("#myModal_PDF_Ticket").modal("show"); //show modal with ready PDF TICKET
 		
-		var barCodeLink = "https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=" + ajax_data.UUID + "&choe=UTF-8"; //form the link to QR API
+		var barCodeLink = "https://chart.googleapis.com/chart?chs=100x100&cht=qr&chl=" + ajax_data.UUID + "&choe=UTF-8"; //form the link to QR API
 		// set <img> {crossOrigin='Anonymous'} is a must FIX
 		var barCode =  "<span class='badge'><img crossOrigin='Anonymous' id='saveImg' src=" + barCodeLink  + " title=" + ajax_data.UUID + " alt='barcode' /></span>";  //set the link to <img>
 		
+		/*
+		var pdfContentText = "<h4><img src='images/ticket/user-s.jpg' alt='user' class='tick-imag'/>&nbsp" + ajax_data.UserName + "</h4>";
+		
+		pdfContentText+=  "<p><img src='images/ticket/mail.jpg'  alt='mail'  class='tick-imag'/>&nbsp" + ajax_data.UserMail + "</p>" +
+		                  "<p><img src='images/ticket/name.jpg'  alt='event' class='tick-imag'/></i>&nbsp" + ajax_data.EventName + "</p>" +
+						  "<p><img src='images/ticket/place.png' alt='veNname' class='tick-imag'/>&nbsp" + ajax_data.VenueName + "</p>" +
+						  "<p><img src='images/ticket/date.png'  alt='date'    class='tick-imag'/>&nbsp" + ajax_data.DateNorm + "</p>" +
+						  "<p><img src='images/ticket/time.png'  alt='time'    class='tick-imag'/>&nbsp" + ajax_data.TimeStartt + "</p>" +
+						  "<p><img src='images/ticket/chair.jpg' alt='place chair' class='tick-imag'/>&nbsp" + ajax_data.TicketPlace + "</p>" +
+						  "<p><img src='images/ticket/price.png' alt='price'       class='tick-imag'/>&nbsp" + ajax_data.Price + " Euro</p>" +
+						  "<p><img src='images/ticket/uuid.png'  alt='uuid'        class='tick-imag'/>&nbsp" + ajax_data.UUID + " </p>" +
+						  barCode;
+		*/
 		
 		var pdfContentText = "<h4><i class='fa fa-address-book-o'></i>&nbsp" + ajax_data.UserName + "</h4>";
 		pdfContentText+=  "<p><i class='fa fa-envelope-o'></i>&nbsp" + ajax_data.UserMail + "</p>" +
@@ -773,7 +806,8 @@ function myValidate(thisX, id, regExp, butttonToDisable,  message, e)  //{e} -. 
     // **************************************************************************************
     //                                                                                     **
 	$("#btnPrintPDF").click(function() { 
-	     var divContents = $("#myModal_PDF_Ticket").html();
+	      /*  //Works but as Print option
+	        var divContents = $("#myModal_PDF_Ticket").html();
             var printWindow = window.open('', '', 'height=400,width=800');
             printWindow.document.write('<html><head><title>Ticket</title>');
             printWindow.document.write('</head><body >');
@@ -781,8 +815,30 @@ function myValidate(thisX, id, regExp, butttonToDisable,  message, e)  //{e} -. 
             printWindow.document.write('</body></html>');
             printWindow.document.close();
             printWindow.print();
-			
+		*/
+		
+		//variant uses jsPDF Library
+		var doc = new jsPDF();
+		//just empty div 
+        var specialElementHandlers = {
+            '#editor': function (element, renderer) {
+                return true;
+            }
+        };
+
+        var htmlX = $("#myModal_PDF_Ticket").html(); //div to pdf
+        doc.fromHTML(htmlX, 15, 15, {
+            'width': 500,
+            'elementHandlers': specialElementHandlers
         });
+		
+		setTimeout(function(){
+            doc.save('ticket-file.pdf');
+        },2000);
+        
+
+			
+    });
 		
 		
 	
@@ -802,10 +858,18 @@ function myValidate(thisX, id, regExp, butttonToDisable,  message, e)  //{e} -. 
            //var btn = document.getElementById('btnSavePDF_to_IMG');
            //btn.onclick = function() {
                //node.innerHTML = "I'm an image now."
-               domtoimage.toBlob(document.getElementById('myModal_PDF_Ticket'))
-               .then(function(blob) {
-                   window.saveAs(blob, 'my-ticket.jpeg');
-           });
+			   try {  //use try catch to show alert, when download is not working in samsung/iphone browser
+			   
+                   domtoimage.toBlob(document.getElementById('myModal_PDF_Ticket')).then(function(blob) {
+					   if(!window.saveAs(blob, 'my-ticket.jpeg')){
+						   throw ("File not saved! Save as PDF or use Chrome!!!!");
+					   }
+                           
+                       });
+		       } catch(e){
+			       alert("Browser is not supported, use updated Chrome.");
+				   alert(e);
+		       }
            //}
 		   
 		
@@ -888,7 +952,7 @@ function myValidate(thisX, id, regExp, butttonToDisable,  message, e)  //{e} -. 
             success: function(data) {
                 // do something;
 				//alert("Taken places to add to seatsTakenArray[]-> " + data.length);
-				$("#err").append("<br>Taken places to add to seatsTakenArray[]-> " + data.length); //instead of alert
+				$("#err").append("<br>Amount of Taken places (which are to be added to seatsTakenArray[])-> " + data.length); //instead of alert
 				
 				//adds taken places to array seatsTakenArray[], which is used in buildHallSeats(vertRows, arrayHorizont, callbackZ)
 				seatsTakenArray = []; //clears prev array
@@ -896,7 +960,7 @@ function myValidate(thisX, id, regExp, butttonToDisable,  message, e)  //{e} -. 
 					seatsTakenArray.push(data[j].fts_booked_place);
 				}
 				//alert("seatsTakenArray[] " + seatsTakenArray);
-				$("#err").append("<br>seatsTakenArray[] " + seatsTakenArray); //instead of alert
+				$("#err").append("<br>Seats taken in seatsTakenArray[] " + seatsTakenArray); //instead of alert
 			    
 				
             },  //end success
