@@ -431,8 +431,8 @@ function myValidate(thisX, id, regExp, butttonToDisable,  message, e)  //{e} -. 
    
      } else {//if  the input is empty, set no  error to span
          thisX.prevAll(".sp:first").html('');
-		 $('#createHall').prop('disabled', false);
-         $('#btnSubmit').html('OK');   
+		 $("#" + butttonToDisable).prop('disabled', false);
+         $("#" + butttonToDisable).html('OK');   
      } 
 }
   
@@ -572,13 +572,18 @@ function myValidate(thisX, id, regExp, butttonToDisable,  message, e)  //{e} -. 
 				//if php SELECT returned 0 events
 				if (data.length == 0){
 					eventsText = 'No Events Found!!!';
-					}
+				}
+				
+			    //gets yesterday UnixTime
+				var ts = Math.round(new Date().getTime() / 1000);
+                var tsYesterday = ts - (24 * 3600);
+				//alert( tsYesterday) ;  // that is: 24 * 60 * 60 * 1000
 				
               	for(i = 0; i < data.length; i++){
 					
-					//encode event name, if event name has blankspace (i.e "Ed Rush") change it to ("Ed:Rush") to have no blankspace in id
-					if(data[i].ev_name.search(" ") > -1){ //if Event has blankspace 
-						eventEncoded = data[i].ev_name.split(' ').join(':'); //change all blankspaces to ":"
+					//encode event name(for elem ID), if event name has blankspace (i.e "Ed Rush") change it to ("Ed:Rush") to have no blankspace in ID
+					if(data[i].ev_name.search(" ") > -1){ //if Event Name has a blankspace 
+						eventEncoded = data[i].ev_name.split(' ').join(':'); //change all blankspaces to ":" (to be used in elem ID)
 					} else {
 						eventEncoded = data[i].ev_name; //without changes
 					}
@@ -586,13 +591,26 @@ function myValidate(thisX, id, regExp, butttonToDisable,  message, e)  //{e} -. 
 					//ID for event to use in SQL, i.e => LTJ Bukhem_1538683200_1 =>(eventName_unix_venID_evTime_evPrice)) =>{eventName(from DB Hall_Events)_Unix(from DB Hall_Events)_venueID(foreignKey DB Hall_Scheme_List_of_Venues)__evTime_evPrice}
 					var idZ = eventEncoded + "_" + data[i].ev_date + "_" + data[i].place_id + "_" + data[i].ev_start_time  + "_" + data[i].ev_price;  //form the id of each event, contains id = 'date_unix_venueID'
 					
-					//form the final text with Upcoming events
-					eventsText = eventsText + "<div id='" + idZ + "' class='row event'>" + 
- 					                              "<div class='col-sm-3 col-xs-4'>" + data[i].ev_name + "</div>" +   //Event name
-											      "<div class='col-sm-3 col-xs-4'>&nbsp;<i class='fa fa-calendar-check-o'></i>" + new Date(data[i].ev_date * 1000).toLocaleString().slice(0,10) + "</div>" + //convert SQL Event UnixStamp to normal date {new Date(Unix * 1000)}, then {toLocaleString()}  to form {04.10.2018, 23:00:00} and {.slice(0,10)} to leave only 04.10.2018
-											      "<div class='col-sm-3 col-xs-4'>&nbsp;<i class='fa fa-home'></i>&nbsp;" + data[i].place_name + ", " + data[i].place_address +"</div>" +  //Fa Lib icon +  venue name + address
-				                              "</div>";
-				}
+					//if this event is not a past event(i.e event UnixTime is greater than NOW UnixTime)
+					if(data[i].ev_date >= tsYesterday ){  
+					
+					    //form the final text with Upcoming events
+					    eventsText = eventsText + "<div id='" + idZ + "' class='row event'>" + 
+ 					                                 "<div class='col-sm-3 col-xs-4'>" + data[i].ev_name + "</div>" +   //Event name
+											         "<div class='col-sm-3 col-xs-4'>&nbsp;<i class='fa fa-calendar-check-o'></i>" + new Date(data[i].ev_date * 1000).toLocaleString().slice(0,10) + "</div>" + //convert SQL Event UnixStamp to normal date {new Date(Unix * 1000)}, then {toLocaleString()}  to form {04.10.2018, 23:00:00} and {.slice(0,10)} to leave only 04.10.2018
+											         "<div class='col-sm-3 col-xs-4'>&nbsp;<i class='fa fa-home'></i>&nbsp;" + data[i].place_name + ", " + data[i].place_address +"</div>" +  //Fa Lib icon +  venue name + address
+				                                  "</div>";
+					} else {
+						//form the final text with PAST/GONE events
+						eventsText = eventsText + "<div id='" + idZ + "' class='row event-past'>" + 
+ 					                                 "<div class='col-sm-3 col-xs-4'>" + data[i].ev_name + "</div>" +   //Event name
+											         "<div class='col-sm-3 col-xs-4'>&nbsp;<i class='fa fa-calendar-check-o'></i>" + new Date(data[i].ev_date * 1000).toLocaleString().slice(0,10) + "</div>" + //convert SQL Event UnixStamp to normal date {new Date(Unix * 1000)}, then {toLocaleString()}  to form {04.10.2018, 23:00:00} and {.slice(0,10)} to leave only 04.10.2018
+											         "<div class='col-sm-3 col-xs-4'>&nbsp;<i class='fa fa-home'></i>&nbsp;" + data[i].place_name + ", " + data[i].place_address + "<img src='images/goneEvent.jpg' alt='gone' class='goneEvent'/>" +"</div>" +  //Fa Lib icon +  venue name + address
+				                                     
+												  "</div>";
+					}
+											  
+				}//end for loop
 				
 				//event = data[0].ev_name; //event name    ,CD??
 				//priceX = data[0].ev_price; //event price ,CD??

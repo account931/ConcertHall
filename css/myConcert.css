@@ -64,7 +64,9 @@ border: 1px solid black;
 .date{color:black; padding-left:0.7em; border-radius:10px;}
 
 
- /* CSS for Events List Item from {Hall_Events} SQL DB */
+
+
+ /* CSS for coming Events List Item from {Hall_Events} SQL DB */
 .event{
 	border:1px solid white; padding:1.2em; cursor:pointer;
    -webkit-transition: all 1.5s ease;
@@ -75,7 +77,36 @@ border: 1px solid black;
 .event:hover{opacity:0.8;color:red;}
 
 
+/* CSS for Past/Gone Events List Item from {Hall_Events} SQL DB */
+.event-past{
+	border:1px solid white; padding:1.2em; cursor:pointer;
+   -webkit-transition: all 1.5s ease;
+    -moz-transition: all 1.5s ease;
+    -o-transition: all 1.5s ease;
+     transition: all 1.5s ease;
+	 }
+.event-past:hover{opacity:0.8;cursor:not-allowed;}
 
+
+
+ /* CSS for IMAGE for  Past Events(which are gone) */
+.goneEvent{
+width:22%;
+position:absolute;
+left:10%;
+}
+
+
+   /*  ----------------Mobile */
+@media screen and (max-width: 460px) {   
+  .goneEvent{
+     width:40%;
+     position:absolute;
+     left:18%;top:12px;
+  }
+	
+}
+/* --------------END  Mobile */
 
 
 

@@ -73,7 +73,13 @@ to make sure that firstly we get taken seats array and then start building the S
 Additionally, Function {run_ajax_to_Get_Taken_Seats()} is set to {async:false} not to overlap the buildHallSeats().
  
 
- # 
+ #IOS FIX -> clicking on was not working on IOS, the fix is to add CSS {cursor:pointer} to the element(not :hover)!!!
+ 
+ #Save PDF -> pf is generated/saved with jspdf.min.js, Library/JS_PDF_library/jspdf.min.js
+ 
+ #Calendar click ->different CSS for past event and future events(if user clicked old date).When user selects a specific date from calendar, the same as onLoad function {get_ajax_Events_List_From_SQL()} is run. 
+ The value of calendar pickup is passed (as 13/10/2018) through ajax to {ajax_php/myConcert_Get_Events.php}, php handler converts it to UnixTime and SELECT events with UnixTime greater than passed.
+ onSuccess {get_ajax_Events_List_From_SQL()} generates yesterday UnixTime {var tsYesterday}, and if SQL Event UnixTime is less than {var tsYesterday}(if user clicked old date in Calendar), we mark this event as gone(class="event-past")
  
  
   #Function  unix_to_normal(unixZ) //convert SQL Event UnixStamp to normal date {new Date(Unix * 1000)}, 
