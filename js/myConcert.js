@@ -602,7 +602,7 @@ function myValidate(thisX, id, regExp, butttonToDisable,  message, e)  //{e} -. 
 				                                  "</div>";
 					} else {
 						//form the final text with PAST/GONE events
-						eventsText = eventsText + "<div id='" + idZ + "' class='row event-past'>" + 
+						eventsText = eventsText + "<div id='" + idZ + "' class='row event-past' title='This event has gone and no longer active'>" + 
  					                                 "<div class='col-sm-3 col-xs-4'>" + data[i].ev_name + "</div>" +   //Event name
 											         "<div class='col-sm-3 col-xs-4'>&nbsp;<i class='fa fa-calendar-check-o'></i>" + new Date(data[i].ev_date * 1000).toLocaleString().slice(0,10) + "</div>" + //convert SQL Event UnixStamp to normal date {new Date(Unix * 1000)}, then {toLocaleString()}  to form {04.10.2018, 23:00:00} and {.slice(0,10)} to leave only 04.10.2018
 											         "<div class='col-sm-3 col-xs-4'>&nbsp;<i class='fa fa-home'></i>&nbsp;" + data[i].place_name + ", " + data[i].place_address + "<img src='images/goneEvent.jpg' alt='gone' class='goneEvent'/>" +"</div>" +  //Fa Lib icon +  venue name + address
@@ -713,7 +713,7 @@ function myValidate(thisX, id, regExp, butttonToDisable,  message, e)  //{e} -. 
 	
 	
 	
-	
+	var dataG; //to use in pdf download
 	// function send ajax to buy Ticket (INSERT to DB {Hall_Free_taken_seats})
 	// **************************************************************************************
     // **************************************************************************************
@@ -722,6 +722,8 @@ function myValidate(thisX, id, regExp, butttonToDisable,  message, e)  //{e} -. 
 	{
 		$("#myModalZ").modal("hide");  //hide "BUY TICKET" modal window
 		
+		//$("#agreedAddToSQL").attr("disabled", true); //disable the button while ajax is running
+		
 		// gets value from get_ajax_VenueHall_Seats_Scheme_From_SQL(venueID) + calc_AllSeatsAmount_and_show_EventHeaderInfo(xx, zz, data)
 		alert("ajax buy-> " + dateNormal + " " +  " " + dateUnix + " " +  event + " " + venueZ  + " " + seatID);
 		
@@ -729,7 +731,7 @@ function myValidate(thisX, id, regExp, butttonToDisable,  message, e)  //{e} -. 
         $.ajax({
             url: 'ajax_php/myConcert_Buy_Ticket.php',
             type: 'POST',
-			dataType: 'JSON', // without this it returned string(that can be alerted), now it returns object
+			dataType: 'json', // without this it returned string(that can be alerted), now it returns object
 			//passing the city
             data: { 
 			    serverName:  $('#formUserName').val(),  //passes Name
@@ -744,6 +746,7 @@ function myValidate(thisX, id, regExp, butttonToDisable,  message, e)  //{e} -. 
 			},
             success: function(data) {
                 // do something;
+				dataG = data;
 				if(data.Status == "OK"){ //checks if SQL INSERT was successful and data.Status == "OK", not data.Status == "FAIL"
 				    //alert(JSON.stringify(data, null, 4));
 				    $("#err").append("<br>ticketPdfInfo[] from Buy_Ticket.php " + JSON.stringify(data, null, 4)); //instead of alert
@@ -753,6 +756,7 @@ function myValidate(thisX, id, regExp, butttonToDisable,  message, e)  //{e} -. 
 				} else {
 					$("#err").append("<br>Buy_Ticket.php CRASHED!!!! data.Status == FAIL "); //instead of alert
 				}
+				//$("#agreedAddToSQL").attr("disabled", false); //enable back the button after ajax has finished
             },  //end success
 			error: function (error) {
 				alert("Ticket was not booked!!! An error occured");
@@ -832,9 +836,11 @@ function myValidate(thisX, id, regExp, butttonToDisable,  message, e)  //{e} -. 
             printWindow.document.write(divContents);
             printWindow.document.write('</body></html>');
             printWindow.document.close();
-            printWindow.print();
-		*/
+            printWindow.print(); */
+			
+			//-------------------------------------------------------
 		
+		/*
 		//variant uses jsPDF Library
 		var doc = new jsPDF();
 		//just empty div 
@@ -852,10 +858,30 @@ function myValidate(thisX, id, regExp, butttonToDisable,  message, e)  //{e} -. 
 		
 		setTimeout(function(){
             doc.save('ticket-file.pdf');
-        },2000);
-        
-
-			
+			//var pdf = btoa(doc.output()); 
+			//send_PDF_to_server(pdf);  //send generated PDF to php server for mailing
+        },2000);	
+        */
+     
+	 
+	     //New Variant-> just open the URL with php FPDF Lib code and pass ticket details as $_GET[]. dataG is a global var, gets it's value in {run_ajax_to_Buy_Ticket()}
+		//alert(location.protocol + '//' + location.hostname + '/concert/ajax_php/myConcert_DownLoad_PDF.php?serverVenue=' + dataG.VenueName);
+		
+		window.open(location.protocol + '//' + location.hostname + 
+		   '/' + window.location.pathname.split('/')[1]/* .slice(0,window.location.pathname.lastIndexOf('/')+1)*/  +  //gets the core derictory(i.e concert)
+		   '/ajax_php/myConcert_DownLoad_PDF.php?serverVenue=' + dataG.VenueName + 
+		   '&serverDateNormal=' + dataG.DateNorm +   //date in normal format
+		   '&serverEvent='      + dataG.EventName +
+		   '&serverName='       + dataG.UserName +  //username
+		   '&serverEmail='      + dataG.UserMail + 
+		   '&serverStartTime='  + dataG.TimeStartt +
+		   '&serverTicketPlace='+ dataG.TicketPlace +
+		   '&serverPrice='      + dataG.Price +
+		   '&serverUUID='       + dataG.UUID );
+        return false;
+	   
+	   
+	   
     });
 		
 		
@@ -935,6 +961,11 @@ function myValidate(thisX, id, regExp, butttonToDisable,  message, e)  //{e} -. 
     // **************************************************************************************
     // **************************************************************************************
 	// Save QR as image //https://github.com/eligrey/FileSaver.js
+	
+	
+	
+	
+	
 	
 	
 	

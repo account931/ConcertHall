@@ -36,7 +36,7 @@ echo $timeZone->getName();
 	  
 	  <!-- jsPDF Library ---- https://github.com/MrRio/jsPDF-->
 	  <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.4.1/jspdf.debug.js" integrity="sha384-THVO/sM0mFD9h7dfSndI6TS0PgAGavwKvB5hAxRRvc0o9cPLohB0wb/PTA7LdUHs" crossorigin="anonymous"></script>-->
-      <script src="Library/JS_PDF_library/jspdf.min.js.js"></script> <!-- jsPDF Library --> 
+      <script src="Library/JS_PDF_library/jspdf.min.js.js"></script> <!-- jsPDF Library NO LONGER USED????--> 
 
 	 
       <link rel="stylesheet" type="text/css" media="all" href="css/myConcert.css">

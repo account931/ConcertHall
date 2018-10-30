@@ -75,7 +75,7 @@ Additionally, Function {run_ajax_to_Get_Taken_Seats()} is set to {async:false} n
 
  #IOS FIX -> clicking on was not working on IOS, the fix is to add CSS {cursor:pointer} to the element(not :hover)!!!
  
- #Save PDF -> pf is generated/saved with jspdf.min.js, Library/JS_PDF_library/jspdf.min.js
+ #Save PDF -> pf is generated/saved with jspdf.min.js, Library/JS_PDF_library/jspdf.min.js -> UPD: NOT ANY MORE, downloaded with PHP FPDF LIB
  
  #Calendar click ->different CSS for past event and future events(if user clicked old date).When user selects a specific date from calendar, the same as onLoad function {get_ajax_Events_List_From_SQL()} is run. 
  The value of calendar pickup is passed (as 13/10/2018) through ajax to {ajax_php/myConcert_Get_Events.php}, php handler converts it to UnixTime and SELECT events with UnixTime greater than passed.
@@ -108,3 +108,14 @@ Unix problem //on Local host provides day -1
 Auto add events
 Inner Join
 How to add event
+
+
+============================================================================================================
+
+Libraries:
+1. Dom_Image_library
+2. FileSaver_libary
+3. JS_PDF_library
+4. PHP_PDF
+5. PHP_QR_Library
+6. PHPMailer-master
