@@ -119,6 +119,7 @@ $(document).ready(function(){
 			 
 			 // function send ajax to buy Ticket (INSERT to DB {Hall_Free_taken_seats})
 			 run_ajax_to_Buy_Ticket();
+			 
 		 }
 	 });
 	
@@ -256,6 +257,19 @@ $(document).ready(function(){
 	 
 	 
 	 
+	 /*
+	 //CREATE ERROR #err Div, used instead of alert
+	 //Below is used instead of alert
+	 var errorText = '<div class="alert alert-info alert-dismissible" id="err">' +
+					         '<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>' +
+                             '</div>';
+	 $("#errorDiv").html(errorText);
+	 */
+	 
+	 
+	 
+	 
+	 
 	 
 	//checks correct input to field2(#seatsInRows). You may enter 1 digit(for all Vert) or several digits separated by comma for every Vert Row. If enetered more or less, it AUTOFIXES THE ARRAY
 	// **************************************************************************************
@@ -277,12 +291,8 @@ $(document).ready(function(){
 		 //if comma is detected in 2nd input, i.e custom user values for H seats
 		 if( patt.test(input2)){
 			 //alert("Comma detected");
-			 //Below is uded instead of alert
-			 var errorText = '<div class="alert alert-info alert-dismissible" id="err">' +
-					         '<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>' +
-                             '<strong>Atention!</strong> Comma detected' +
-                             '</div>';
-			 $("#errorDiv").html(errorText);						
+			 $("#err").append("<br><strong>Atention!</strong> Comma detected"); //instead of alert
+			 						
 			 
 			 //if user printed more or less values that requirs input1(input1.vertcRows = 3, input2.seatsInRows=3,2)
 			 if(input2.split(",").length!= input1){
@@ -727,9 +737,19 @@ function myValidate(thisX, id, regExp, butttonToDisable,  message, e)  //{e} -. 
 		// gets value from get_ajax_VenueHall_Seats_Scheme_From_SQL(venueID) + calc_AllSeatsAmount_and_show_EventHeaderInfo(xx, zz, data)
 		alert("ajax buy-> " + dateNormal + " " +  " " + dateUnix + " " +  event + " " + venueZ  + " " + seatID);
 		
+		//check if checkbox is ticked------
+		var checkBoxVal;
+		if($("#checkX").is(":checked")){
+			checkBoxVal = true;
+		} else {
+			checkBoxVal = false;
+		}
+		$("#err").append("<br>Checkbox is on: " + checkBoxVal); //instead of alert
+		//END check if checkbox is ticked---
+		
 		// send  data  to  PHP handler  ************ 
         $.ajax({
-            url: 'ajax_php/myConcert_Buy_Ticket.php',
+            url: 'ajax_php/myConcert_Buy_Ticket.php',  //->Buy_Ticket_Action() + ->add_to_cookies(); + $sendMail ->generate_ticket_PDF_and_sendEmail();
             type: 'POST',
 			dataType: 'json', // without this it returned string(that can be alerted), now it returns object
 			//passing the city
@@ -742,10 +762,12 @@ function myValidate(thisX, id, regExp, butttonToDisable,  message, e)  //{e} -. 
 				serverVenue:       venueZ,  //passes Venue name
 				serverTicketPlace: seatID,  //passes Venue name
 				serverPrice:       priceX,
-				serverStartTime:   startTimeZ
+				serverStartTime:   startTimeZ,
+				serverCheckBox:    checkBoxVal  //the value of cookies checkbox(true, false)
 			},
             success: function(data) {
                 // do something;
+				//alert(data);
 				dataG = data;
 				if(data.Status == "OK"){ //checks if SQL INSERT was successful and data.Status == "OK", not data.Status == "FAIL"
 				    //alert(JSON.stringify(data, null, 4));
@@ -753,7 +775,10 @@ function myValidate(thisX, id, regExp, butttonToDisable,  message, e)  //{e} -. 
 				    console.log(JSON.stringify(data, null, 4));
 				    showRelevantVenueHall_withRelevantEvent(id_eventID); //renew taken seats scheme after user booked a new seat //id_eventID is set in showRelevantVenueHall_withRelevantEvent itself
                     display_PDF_Ticket(data); //show a ready ticket to user with a button to download PDF ticket
+					//add_ticket_to_Cookies();
+					sendAjax_to_count_cookieBusket_quanity(); //renew the quantity in round icon/badge(js/cookie_server.js)
 				} else {
+					alert("Buy_Ticket.php CRASHED!!!! data.Status == FAIL ");
 					$("#err").append("<br>Buy_Ticket.php CRASHED!!!! data.Status == FAIL "); //instead of alert
 				}
 				//$("#agreedAddToSQL").attr("disabled", false); //enable back the button after ajax has finished
@@ -817,6 +842,7 @@ function myValidate(thisX, id, regExp, butttonToDisable,  message, e)  //{e} -. 
 						  barCode;
 		
 		$("#pdf_content").html(pdfContentText);
+		
 	}
 	
 	
@@ -865,8 +891,10 @@ function myValidate(thisX, id, regExp, butttonToDisable,  message, e)  //{e} -. 
      
 	 
 	     //New Variant-> just open the URL with php FPDF Lib code and pass ticket details as $_GET[]. dataG is a global var, gets it's value in {run_ajax_to_Buy_Ticket()}
-		//alert(location.protocol + '//' + location.hostname + '/concert/ajax_php/myConcert_DownLoad_PDF.php?serverVenue=' + dataG.VenueName);
-		
+		//alert(location.protocol + '//' + location.hostname + '/' + window.location.pathname.split('/')[1]/* .slice(0,window.location.pathname.lastIndexOf('/')+1)*/  + '/ajax_php/myConcert_DownLoad_PDF.php?serverVenue=' + dataG.VenueName);
+		 $("#err").append('<br>' + location.protocol + '//' + location.hostname + '/' + window.location.pathname.split('/')[1]/* .slice(0,window.location.pathname.lastIndexOf('/')+1)*/  + '/ajax_php/myConcert_DownLoad_PDF.php?serverVenue=' + dataG.VenueName); //instead of alert
+		 
+		 
 		window.open(location.protocol + '//' + location.hostname + 
 		   '/' + window.location.pathname.split('/')[1]/* .slice(0,window.location.pathname.lastIndexOf('/')+1)*/  +  //gets the core derictory(i.e concert)
 		   '/ajax_php/myConcert_DownLoad_PDF.php?serverVenue=' + dataG.VenueName + 

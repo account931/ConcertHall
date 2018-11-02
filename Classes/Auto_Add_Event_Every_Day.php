@@ -27,8 +27,8 @@ class Auto_Add_Event_Every_Day  {
 			'Submerged', 'Pendulum', 'High Contrast', 'Chase & Status', 'Kosheen', 'Black Sun Empire', 'Sub Focus', 
 			'Roni Size', 'Photek', 'Future Prophecies', 'Evol Intent', 'Enduser', 'Nu:Tone', 'Dieselboy', 
 			'Camo & Krooked', 'LimeWax', 'Omni Trio', 'State Of Mind', 'Dom & Roland', 'Phace', 'The Upbeats', 
-			'Bad Company UK', 'Kryptic Minds & Leon Switch', 'D.Kay', 'Chris.SU', 'Mefus',
-			'Logistics', 'Photek', 'Technical Itch', 'Mayhem', 'N.Phect', 'Bulletproof');
+			'Bad Company UK', 'Kryptic Minds & Leon Switch', 'D.Kay', 'Chris.SU',
+			'Logistics', 'Photek', 'Technical Itch', 'Mayhem', 'N.Phect', 'Bulletproof', 'Mefjus', 'Sinthetix', 'Rob F');
 			
 		//gets 3 random artist to auto INSERT
 		$randomArtists = array();
@@ -43,15 +43,17 @@ class Auto_Add_Event_Every_Day  {
 			$resFR = $conn->query("SELECT * FROM Hall_Events WHERE ev_date ='{$UnixSt}'"); 
             if($resFR->rowCount()==0) {
 			
-                //Start INSERT (from  ---------
-                $sth = $conn ->prepare("INSERT INTO Hall_Events(ev_name, ev_venueHall_id, ev_price, ev_date, ev_start_time ) VALUES (:event, :hall, :price, :date, :startTime) ");
-                $sth->bindValue(':event', $randomArtists[0] );   //name of event 'LTJ Bukhem'
-                $sth->bindValue(':hall' ,  1);             // the id of ConcertHall in table Hall_List_of_Venues
-                $sth->bindValue(':price',  15);            // TAble Number ID
-                $sth->bindValue(':date' , $UnixSt);        //unix timestamp 
-                $sth->bindValue(':startTime', '19.30' );
-                $sth->execute();
-                //END INSERT (from function ---------
+                
+				
+				//Start INSERT (from function StartBooking())---------
+                $sth3 = $conn ->prepare("INSERT INTO Hall_Events(ev_name, ev_venueHall_id, ev_price, ev_date,  ev_start_time ) VALUES (:event, :hall, :price, :date, :startTime) ");
+                $sth3->bindValue(':event', $randomArtists[2] );   //name of event 'BSE'
+                $sth3->bindValue(':hall' ,  3);             // the id of ConcertHall in table Hall_List_of_Venues
+                $sth3->bindValue(':price',  44);            // TAble Number ID
+                $sth3->bindValue(':date' , $UnixSt);        //unix timestamp
+                $sth3->bindValue(':startTime' , '21.00');
+                $sth3->execute();
+				
 				
 				//Start INSERT (from function StartBooking())---------
                 $sth2 = $conn ->prepare("INSERT INTO Hall_Events(ev_name, ev_venueHall_id, ev_price, ev_date,  ev_start_time ) VALUES (:event, :hall, :price, :date, :startTime) ");
@@ -62,15 +64,16 @@ class Auto_Add_Event_Every_Day  {
                 $sth2->bindValue(':startTime' , '22.00');
                 $sth2->execute();
 				
+				//Start INSERT (from  ---------
+                $sth = $conn ->prepare("INSERT INTO Hall_Events(ev_name, ev_venueHall_id, ev_price, ev_date, ev_start_time ) VALUES (:event, :hall, :price, :date, :startTime) ");
+                $sth->bindValue(':event', $randomArtists[0] );   //name of event 'LTJ Bukhem'
+                $sth->bindValue(':hall' ,  1);             // the id of ConcertHall in table Hall_List_of_Venues
+                $sth->bindValue(':price',  15);            // TAble Number ID
+                $sth->bindValue(':date' , $UnixSt);        //unix timestamp 
+                $sth->bindValue(':startTime', '19.30' );
+                $sth->execute();
+                //END INSERT (from function ---------
 				
-				//Start INSERT (from function StartBooking())---------
-                $sth3 = $conn ->prepare("INSERT INTO Hall_Events(ev_name, ev_venueHall_id, ev_price, ev_date,  ev_start_time ) VALUES (:event, :hall, :price, :date, :startTime) ");
-                $sth3->bindValue(':event', $randomArtists[2] );   //name of event 'BSE'
-                $sth3->bindValue(':hall' ,  3);             // the id of ConcertHall in table Hall_List_of_Venues
-                $sth3->bindValue(':price',  44);            // TAble Number ID
-                $sth3->bindValue(':date' , $UnixSt);        //unix timestamp
-                $sth3->bindValue(':startTime' , '21.00');
-                $sth3->execute();
 				
 				
             } //else {echo "exists";}

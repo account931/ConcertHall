@@ -1,6 +1,9 @@
 <?php
 //session_start();
 include 'Classes/autoload.php';//uses autoload instead of manual includin each class->
+$n = new MyCookie();
+$n->setCookie();
+//MyCookie::setCookie(); //setting Cookie if not set 
 
 date_default_timezone_set("Europe/Kiev"); //mega Fix to fix Error in UnixStamp Diffrenece on LocalHost and Server(local was Moscow, server zzz - Kyiv)
 
@@ -42,6 +45,7 @@ echo $timeZone->getName();
       <link rel="stylesheet" type="text/css" media="all" href="css/myConcert.css">
 	  
       <script src="js/myConcert.js"></script>         <!-- Core  JS-->
+	  <script src="js/cookie_server.js"></script>     <!-- Cookie  JS-->
 	  <script src="js/changeStyleTheme.js"></script>   <!-- Change wallpapers,changeStyleTheme JS-->
 	  
 	  
@@ -137,9 +141,12 @@ echo $timeZone->getName();
 				    
 				 
 				 
-				    <!--------- Error Closable window-------->
+				    <!--------- Error Closable window with #err inside-------->
 					<br>
 					<div class="col-sm-12 col-xs-12" id="errorDiv"> 
+					    <div class="alert alert-info alert-dismissible" id="err">
+					        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                        </div>
 				       
 					</div>
 				    <!------ ENF Error Closable window-------->
@@ -217,7 +224,7 @@ echo $timeZone->getName();
 							<br>
 							<label for="formUserEmail">Your E-mail:</label>
 							<span class="error_req"> * </span> <span class="sp"  id =""> </span><!-- Reg exp Validation -->
-                            <input type="text" class="form-control inputZ" id="formUserEmail" required/>
+                            <input type="text" class="form-control inputZ" id="formUserEmail" value="account931@ukr.net" required/>
 							<br>
 							<label for="formTicketDate">Ticket Date:</label>
                             <p class="form-control inputZ" id="formTicketDate"></p>
@@ -244,6 +251,8 @@ echo $timeZone->getName();
 					  </center>
                   </div>
                   <div class="modal-footer">
+				       <!----- CheckBox to save in $_Cookies[] ----->
+					   <input type="checkbox" name="cookies" id="checkX" value="saveCookies" checked>Keep in history(cookies)<br><br>
 				       <button type="button" class="btn btn-default" id="agreedAddToSQL">Buy</button>
                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                   </div>
@@ -282,8 +291,8 @@ echo $timeZone->getName();
      </div>
       <!-----------------  END Modal window with Ready PDF Ticket(is shown when a user has purchased the Ticket)---------------------------->
 		
-    <!---  only for jsPDF Library -->		
-	<div id="editor"></div>		  
+     <!---  only for jsPDF Library -->		
+	 <div id="editor"></div>		  
 				  
 				  
     	           <!-- This is a auto hidden canvas, used for saveing qr image to JPEG-->
@@ -293,6 +302,37 @@ echo $timeZone->getName();
 				   
 				   
 				   
+				   
+				  <!-- Round icon/badge top right with tickets quantity in $_Cookie, Cookie is set by MyCookie::setCookie() in 1st line index.php;-->
+				  <span class="badge ticketInfo badge1" data-badge="0"> <img src="images/buy.png" id="cookieIcon"/> </span>
+				  
+				  
+				  <!-----------------  Modal window with Cookies History ----------------------------->
+                  <div id="myModal_Cookies" class="modal  fade modalX" role="dialog">
+                      <div class="modal-dialog"  style="width:92%;">
+                          <!-- Modal content-->
+                          <div class="modal-content">
+                              <div class="modal-header">
+                                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                  <h4 class="modal-title">History of Previous Tickets(Cookies) <span id="historyCount"></span>  </h4>
+                              </div>
+                              <div class="modal-body" id="cookies_content">
+				                  <!-- here goes Ticket content-->
+                              </div>
+                              <div class="modal-footer">
+                                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					              <br><br><br>
+                              </div>
+                           </div>
+
+                      </div>
+                   </div>
+      <!-----------------  END Modal window with Cookies---------------------------->
+				  
+				  
+				  
+				  
+				  
 				   
 				  
 		
@@ -333,4 +373,10 @@ echo $timeZone->getName();
       include("Classes/RecordTxt.php");
       RecordTxt::RecordAnyInput(array(/*$user*/), 'recordText/myConcert.txt');// Record  to  text;
 //End  Record;
+
+
 ?>
+
+
+
+  
