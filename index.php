@@ -1,8 +1,8 @@
 <?php
 //session_start();
 include 'Classes/autoload.php';//uses autoload instead of manual includin each class->
-$n = new MyCookie();
-$n->setCookie();
+//$n = new MyCookie();
+//$n->setCookie();
 //MyCookie::setCookie(); //setting Cookie if not set 
 
 date_default_timezone_set("Europe/Kiev"); //mega Fix to fix Error in UnixStamp Diffrenece on LocalHost and Server(local was Moscow, server zzz - Kyiv)
@@ -304,7 +304,7 @@ echo $timeZone->getName();
 				   
 				   
 				  <!-- Round icon/badge top right with tickets quantity in $_Cookie, Cookie is set by MyCookie::setCookie() in 1st line index.php;-->
-				  <span class="badge ticketInfo badge1" data-badge="0"> <img src="images/buy.png" id="cookieIcon"/> </span>
+				  <span class="badge ticketInfo badge1" id="bbb" data-badge="1"> <img src="images/buy.png" id="cookieIcon"/> </span>
 				  
 				  
 				  <!-----------------  Modal window with Cookies History ----------------------------->
@@ -314,7 +314,7 @@ echo $timeZone->getName();
                           <div class="modal-content">
                               <div class="modal-header">
                                   <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                  <h4 class="modal-title">History of Previous Tickets(Cookies) <span id="historyCount"></span>  </h4>
+                                  <h4 class="modal-title">History of Previous Tickets(Loc Storage):  <span id="historyCount"></span>  </h4>
                               </div>
                               <div class="modal-body" id="cookies_content">
 				                  <!-- here goes Ticket content-->

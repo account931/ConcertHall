@@ -25,14 +25,14 @@ class Buy_Ticket  {
     public function Buy_Ticket_Action() {
 		global $conn; // global from $singeltone=ConnectDB::getInstance();
 		global $ticketPdfInfo;  // set as global(array with user Ticket data)
-		global $UUID_X;
+		//global $UUID_X; //must be global to use in Classes/MyCookies.php->function add_to_cookies()
 		
  
 		 //generates UUID - unique ticket number
 		 $UUID = md5(uniqid());  //md5 the unique number
 		 //echo json_encode('$UUID: ' . $UUID);
 		 $this->UUID = $UUID ;
-		 $UUID_X = $UUID ;
+		 //$UUID_X = $UUID ;  //assign UUID to global var to be used in Classes/MyCookies.php->function add_to_cookies() 
 		
         try {        
 			//checking if UUID is not in DB yet
@@ -45,14 +45,14 @@ class Buy_Ticket  {
                         $stmt2 = $conn->query("SELECT * FROM  Hall_Free_taken_seats  WHERE  (fts_venue_id = '{$_POST['serverVenue']}') AND (fts_event_name = '{$_POST['serverEvent']}') AND (fts_unix_date = '{$_POST['serverDate']}') AND (fts_booked_place = '{$_POST['serverTicketPlace']}') "); 
 			
 			            if($stmt2->rowCount()== 0) {
-							if($this->insert_Ticket()){  //if method return TRUE
+							/*if(*/$this->insert_Ticket(); /*){*/  //if method return TRUE
 								//Adds a booked ticket to php Cookies(instead of using ajax_php/Cookie_Busket_Add.php)
-                                $cookie = new MyCookie();
-	                            $cookie ->add_to_cookies(); 
+                                //$cookie = new MyCookie();
+	                            //$cookie ->add_to_cookies(); 
 								
-								echo json_encode($ticketPdfInfo); //!!!is reassigned from {insert_Ticket()}, to be used only after {$cookie = new MyCookie();$cookie ->add_to_cookies();},
+								//echo json_encode($ticketPdfInfo); //!!!is reassigned from {insert_Ticket()}, to be used only after {$cookie = new MyCookie();$cookie ->add_to_cookies();},
          		                                                 //!!!because u've to set cookies first and then make echo. Otherwise-> u'll get error :CAN"T MODIFY HEADERS, HEADERS ALREADY SENT 
-							} 
+							//} 
 							//$this->send_PDF_Mail_to_Client();
 						} else {
 							$this->notify_Place_Is_Taken();
@@ -133,7 +133,7 @@ class Buy_Ticket  {
 									  
 		   
 		   //print_r($ticketPdfInfo);
-		   //echo json_encode($ticketPdfInfo);  //!!!reassigned to be used in this same file, but only after {$cookie = new MyCookie();$cookie ->add_to_cookies();},
+		   echo json_encode($ticketPdfInfo);  //!!!reassigned to be used in this same file, but only after {$cookie = new MyCookie();$cookie ->add_to_cookies();},
          		                                //!!!because u've to set cookies first and then make echo. Otherwise-> u'll get error :CAN"T MODIFY HEADERS, HEADERS ALREADY SENT 
 		   
            //END INSERT (from function ---------

@@ -1,5 +1,5 @@
 <?php
-
+//NOT USED AT ALL!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 Class MyCookie
 {

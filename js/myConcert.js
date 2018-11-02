@@ -776,11 +776,13 @@ function myValidate(thisX, id, regExp, butttonToDisable,  message, e)  //{e} -. 
 				    showRelevantVenueHall_withRelevantEvent(id_eventID); //renew taken seats scheme after user booked a new seat //id_eventID is set in showRelevantVenueHall_withRelevantEvent itself
                     display_PDF_Ticket(data); //show a ready ticket to user with a button to download PDF ticket
 					//add_ticket_to_Cookies();
-					sendAjax_to_count_cookieBusket_quanity(); //renew the quantity in round icon/badge(js/cookie_server.js)
+					//sendAjax_to_count_cookieBusket_quanity(); //renew the quantity in round icon/badge(js/cookie_server.js)
+					add_ticket_Local_Storage(data);
 				} else {
 					alert("Buy_Ticket.php CRASHED!!!! data.Status == FAIL ");
 					$("#err").append("<br>Buy_Ticket.php CRASHED!!!! data.Status == FAIL "); //instead of alert
 				}
+				
 				//$("#agreedAddToSQL").attr("disabled", false); //enable back the button after ajax has finished
             },  //end success
 			error: function (error) {
@@ -801,6 +803,16 @@ function myValidate(thisX, id, regExp, butttonToDisable,  message, e)  //{e} -. 
 	
 	
 	
+	
+	
+	//-----------------------------------------------------------------
+	
+	
+	
+	
+	
+	
+	//----------------------------------------------
 	
 		
 	// function to show a ready ticket to user with a button to download PDF ticket
