@@ -911,7 +911,7 @@ function myValidate(thisX, id, regExp, butttonToDisable,  message, e)  //{e} -. 
 		   '/' + window.location.pathname.split('/')[1]/* .slice(0,window.location.pathname.lastIndexOf('/')+1)*/  +  //gets the core derictory(i.e concert)
 		   '/ajax_php/myConcert_DownLoad_PDF.php?serverVenue=' + dataG.VenueName + 
 		   '&serverDateNormal=' + dataG.DateNorm +   //date in normal format
-		   '&serverEvent='      + dataG.EventName +
+		   '&serverEvent='      + decodeSpecialChars(dataG.EventName) +  //decode any "&"
 		   '&serverName='       + dataG.UserName +  //username
 		   '&serverEmail='      + dataG.UserMail + 
 		   '&serverStartTime='  + dataG.TimeStartt +
@@ -925,6 +925,34 @@ function myValidate(thisX, id, regExp, butttonToDisable,  message, e)  //{e} -. 
     });
 		
 		
+	
+	
+	
+	//USED in {$("#btnPrintPDF").click(function()} to decode spec chars(in this case "&") to some other chars((in this case to "_"))
+	//Used as when we create URL to download PDF with fPDF.php(Classes/Create_PDF_with_QR), event name($_GET['serverEvent']) should not contain "&". Otherwise it cuts "Rom & Roland" to "Dom"
+	// **************************************************************************************
+    // **************************************************************************************
+    //                                                                                     ** 
+	function decodeSpecialChars(charX)
+	{
+		var res;
+		if(charX.search("&") > -1){ //if Event Name has a "&"
+		alert("has &");
+		   res = charX.split('&').join('_'); //change all blankspaces to ":" (to be used in elem ID)
+		   alert(res);
+		   return res;
+		} else {
+			res = charX;
+			return res;
+		}
+	}
+	
+	
+	
+
+						
+	
+	
 	
 	  
 	

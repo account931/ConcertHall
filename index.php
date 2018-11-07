@@ -45,7 +45,7 @@ echo $timeZone->getName();
       <link rel="stylesheet" type="text/css" media="all" href="css/myConcert.css">
 	  
       <script src="js/myConcert.js"></script>         <!-- Core  JS-->
-	  <script src="js/cookie_server.js"></script>     <!-- Cookie  JS-->
+	  <script src="js/local_storage.js"></script>     <!-- local_storage (instead of cookie)  JS-->
 	  <script src="js/changeStyleTheme.js"></script>   <!-- Change wallpapers,changeStyleTheme JS-->
 	  
 	  

@@ -77,6 +77,19 @@ Additionally, Function {run_ajax_to_Get_Taken_Seats()} is set to {async:false} n
  
  #Save PDF -> pf is generated/saved with jspdf.min.js, Library/JS_PDF_library/jspdf.min.js -> UPD: NOT ANY MORE, downloaded with PHP FPDF LIB
  
+ # PDF: pdf is created by Php fPDF library only (js lib is no longer used). 
+ While creating Pdf, we use Php QR library to nest QR to pdf. Google QR Api is used only in Local Storage history and displaying QR to user right after buying a ticket.
+ How it works: onClick, we js open {/ajax_php/myConcert_DownLoad_PDF.php?serverVenue=' + dataG.VenueName +....}(pass all tickets info to $_GET)
+ {function decodeSpecialChars(charX)} is to decode spec chars in Event name(in this case "&") to some other chars((in this case to "_")). I.e, "Rom & Roland" to "Rom_Roland"
+ We back decode "Rom_Roland" to "Rom & Roland" in {/ajax_php/myConcert_DownLoad_PDF.php->Classes/Create_PDF_with_QR->decodeSpecialChars($_GET['serverEvent'])}
+ 
+ # Previous ticket history worked on php $_Cookies but was deprecated as cookie can store 4kb only. Now changed to local storage.
+
+ #In get_ajax_Events_List_From_SQL() , while we form a list with all Events and assign to every event unique ID  (eventName_unix_venID_evTime_evPrice): 
+ some events from SQL may contain blankspace (i.e Ed Rush), which is not allowed to be used in ID. So we check ID for blankspaces and if any, replace them with ":". 
+ And later in { calc_AllSeatsAmount_and_show_EventHeaderInfo} we decode it back if necessary ()
+
+ 
  #Calendar click ->different CSS for past event and future events(if user clicked old date).When user selects a specific date from calendar, the same as onLoad function {get_ajax_Events_List_From_SQL()} is run. 
  The value of calendar pickup is passed (as 13/10/2018) through ajax to {ajax_php/myConcert_Get_Events.php}, php handler converts it to UnixTime and SELECT events with UnixTime greater than passed.
  onSuccess {get_ajax_Events_List_From_SQL()} generates yesterday UnixTime {var tsYesterday}, and if SQL Event UnixTime is less than {var tsYesterday}(if user clicked old date in Calendar), we mark this event as gone(class="event-past")
@@ -98,6 +111,9 @@ in ajax ctreate $_SESSION ["token1234"], in php checka if $_SESSION ["token1234"
 
   #Rex exp validation for Input of Horiz Seats is performed with function myValidate(thisX, id, regExp, message, e).
  The Reg exp pattern: u can input a single digit or digits separated with comma. Comma can not be the last value in input. 
+ 
+ 
+ 
 
 ===============================================================================================================================
 
@@ -116,7 +132,7 @@ changed Php Cookies to Local Storage for Tickets History
 Libraries:
 1. Dom_Image_library
 2. FileSaver_libary
-3. JS_PDF_library
+3. JS_PDF_library(UPD -> not used)
 4. PHP_PDF
 5. PHP_QR_Library
 6. PHPMailer-master
