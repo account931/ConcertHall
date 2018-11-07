@@ -109,7 +109,7 @@ $pdf->Ln( 12 );  //blankspace line with height 12
 
       //add Ticket Event name
       $pdf->Ln( 5 );
-      $eventX = "Event: " . $_GET['serverEvent'];
+      $eventX = "Event: " . $this->decodeSpecialChars($_GET['serverEvent']); //decode , replace in Event any "_" to "&"
       $pdf->Write( 6,  $eventX  ); //6 is a height
       $pdf->Ln( 5 );
 
@@ -198,6 +198,27 @@ unlink($filename);
    
    
    
+   
+   
+  //Decode, replace in Event any "_" to "&"
+  // **************************************************************************************
+  // **************************************************************************************
+  //                                                                                     **  
+  public function decodeSpecialChars($charX) 
+  {
+      if (strpos($charX, '_') !== false) {  //if string contains "_"
+          $a = explode("_", $charX); //split by "_"
+		  $b = implode("&",$a);    //join by "&"
+		  return $b;
+      } else {
+		  $b = $charX;  //without changes
+		  return $b;
+	  }
+  }
+   
+   // **                                                                                  **
+  // **************************************************************************************
+  // **************************************************************************************
    
 
 
