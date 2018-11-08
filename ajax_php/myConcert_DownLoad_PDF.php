@@ -4,7 +4,7 @@ include '../Classes/autoload.php';//uses autoload instead of manual includin eac
 
 //download the pdf file
 $pdf = new Create_PDF_with_QR();
-$arg = "D";
+$arg = "D"; //pdfDisplayMode can be: I - display to screen, D -download, S - don't show to screen(used in mailing)
 $pdf->create_pdf_qr($arg); //pdfDisplayMode can be: I - display to screen, D -download, S - don't show to screen(used in mailing)
  
 

@@ -44,8 +44,9 @@ echo $timeZone->getName();
 	 
       <link rel="stylesheet" type="text/css" media="all" href="css/myConcert.css">
 	  
-      <script src="js/myConcert.js"></script>         <!-- Core  JS-->
 	  <script src="js/local_storage.js"></script>     <!-- local_storage (instead of cookie)  JS-->
+      <script src="js/myConcert.js"></script>         <!-- Core  JS-->
+	  
 	  <script src="js/changeStyleTheme.js"></script>   <!-- Change wallpapers,changeStyleTheme JS-->
 	  
 	  
@@ -304,7 +305,7 @@ echo $timeZone->getName();
 				   
 				   
 				  <!-- Round icon/badge top right with tickets quantity in $_Cookie, Cookie is set by MyCookie::setCookie() in 1st line index.php;-->
-				  <span class="badge ticketInfo badge1" id="bbb" data-badge="1"> <img src="images/buy.png" id="cookieIcon"/> </span>
+				  <span class="badge ticketInfo badge1" id="bbb" data-badge="."> <img src="images/buy.png" id="cookieIcon"/> </span>
 				  
 				  
 				  <!-----------------  Modal window with Cookies History ----------------------------->

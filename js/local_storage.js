@@ -6,9 +6,18 @@
 //should remove Ready section to get $this function visible in myConcert.js
 //sendAjax_to_count_cookieBusket_quanity(); //counts ticket in php cookies to dispay in round badge top right
 	
-	var temporaryTicketsObject;                //object that contains all tickets history from Local storage(created from LocSt on every Load)
-	 check_if_localStorage_exists();  //checks if LS exists, if not create it
-	 count_localStorage_quanity();   //counts quantity of  tickets in LocalStorage
+	var temporaryTicketsObject;  //object that contains all tickets history from Local storage(created from LocSt on every Load)
+	
+  
+	//Promise Deferred - mega Fix, count_localStorage_quanity did not work without Promise Deferred 
+    $.when( check_if_localStorage_exists() ).then(function( ) {     //checks if LS exists, if not create it
+        setTimeout(count_localStorage_quanity, 2000);               //counts quantity of  tickets in LocalStorage
+    });
+    
+	 //check_if_localStorage_exists();  //checks if LS exists, if not create it
+	 //count_localStorage_quanity();   //counts quantity of  tickets in LocalStorage
+	
+	
 	
 	
 	// Click button to show all cookies ---------------
@@ -46,9 +55,13 @@
 			var retrievedObject = JSON.parse(retrievedObject);
 			temporaryTicketsObject = retrievedObject;
 			//refreshCartIcon (); // recalc the header cart icon, had to outline it out of ready section, as it was invisible
-			alert ("Loc St exists" + JSON.stringify(temporaryTicketsObject, null, 4) + " length: " + Object.keys(temporaryTicketsObject).length);
-			//$("#err").append("<br>Loc St exists" + JSON.stringify(temporaryTicketsObject, null, 4) + " length: " + Object.keys(temporaryTicketsObject).length); //instead of alert
-       } else {
+			//alert ("Loc St exists" + JSON.stringify(temporaryTicketsObject, null, 4) + " length: " + Object.keys(temporaryTicketsObject).length);
+			
+			$(document).ready(function(){  //mega Fix, won't load without ready, if make Ready to all script, some function get unvisible
+			    //instead of alert
+			    $("#err").append("<br>Loc St exists" + JSON.stringify(temporaryTicketsObject, null, 4) + " length: " + Object.keys(temporaryTicketsObject).length + "<br><hr>"); //instead of alert
+            });
+	   } else {
         
 		// if Loc Storage does not exist (i.e Object was never initialized), create a new Object
 	    if (typeof temporaryTicketsObject == "undefined") {
@@ -60,7 +73,7 @@
 		    alert("Object Exists"); // will never fire
 	    }
 	}	
-
+     return true;
 		
 	}
 	// **                                                                                  **
@@ -69,9 +82,13 @@
 	
 	
 	
+	
+	
+	
+	
+	
 
-	
-	
+
 	
 	
 	
@@ -103,6 +120,8 @@
 		
 		    //alert("Added successfully! Length: " + Object.keys(temporaryTicketsObject).length);
 			$("#err").append("<br>Added successfully! Length: " + Object.keys(temporaryTicketsObject).length); //instead of alert
+			
+			count_localStorage_quanity(); //recount history
 	}
 	// **                                                                                  **
     // **************************************************************************************
@@ -124,8 +143,8 @@
 		var ll = Object.keys(temporaryTicketsObject).length;
 		//$("#err").append("<br>LS Object->count: " + ll); //instead of alert
 		
-        $('.badge').attr('data-badge',20);	
-		$('.badge').data('data-badge',20); 
+        $('.badge').attr('data-badge', ll);	
+		//$('.badge').data('data-badge', ll); 
 		//$('#bbb').attr('data-badge', ll  ); //update round badge with quantity //use -1 as 1st cookie attay el is empty
 		//$('#bbb').html("s");
 		//alert(ll);
@@ -196,15 +215,22 @@
     //                                                                                     ** 
 	function delete_all_local_storage()
 	{
-		if(localStorage.length < 0){
+		//if temporaryTicketsObject is empty
+		if(Object.keys(temporaryTicketsObject).length <= 0){
 			alert("History is empty");
+			return false;
 		}
 		
 		if (confirm("Sure to delete the history?")){
 			
+			//save temporaryTicketsObject as empty
+			temporaryTicketsObject = {};
+			localStorage.setItem('localTicketStorageObject991', JSON.stringify(temporaryTicketsObject)); 
 		    //localStorage.removeItem("localTicketStorageObject991"); 
-            localStorage.clear();			
+            //localStorage.clear();			
 			//referesh history window
+		
+			 
             check_if_localStorage_exists(); //creates an empty LocSt
 			get_all_tickets_from_LocalStorage_list();
 			count_localStorage_quanity();

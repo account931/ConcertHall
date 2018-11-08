@@ -44,7 +44,7 @@ border: 1px solid black;
 }	
 	
 /*----Hover over free seats---*/	
-.free:hover{
+.free :hover{
 	background:yellow;
 	cursor:pointer;
 }
@@ -55,6 +55,8 @@ border: 1px solid black;
 	cursor:not-allowed;
 }
 
+/*---- Hover over "Delete Loc Storage --*/	
+#deleteLocStorage:hover {cursor:pointer;}
 
  /* Span for Reg exp errors */
 .error_req, .sp {color:red;}
@@ -105,7 +107,8 @@ left:10%;
      left:18%;top:12px;
   }
   
-  
+  .ticketInfo{
+	position:absolute; top:0.6em;right:1.3em; font-size:1.5em; width:12%;}
    
    
 }
@@ -117,6 +120,13 @@ left:10%;
 .ticketInfo{
 	position:absolute; top:0.6em;right:1.3em; font-size:1.5em; width:4%;
 }
+
+  /*  ----------------Mobile */
+@media screen and (max-width: 460px) {   
+  .ticketInfo{width:8%;right:0.7em;} 
+}
+/* --------------END  Mobile */
+
 
 /* round icon with quantity of tickets in cookie */
 .badge1[data-badge]:after {
@@ -139,6 +149,16 @@ left:10%;
 /* Icon/badge top right with quantity of tickets */
 #cookieIcon{cursor:pointer; width:97%;}
 #cookieIcon:hover{cursor:pointer;}
+
+
+
+
+
+
+
+
+
+
 
 
 
