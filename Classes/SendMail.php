@@ -18,7 +18,7 @@ Class SendMail
   $pdf->create_pdf_qr($arg); //pdfDisplayMode can be: I - display to screen, D -download, S - don't show to screen(used in mailing)
 
   //Send PDF as an attachment via e-mail
-  //$this->send_PhpMAiler(/*$attachment*/);
+  $this->send_PhpMAiler(/*$attachment*/);
 
 
          
@@ -45,6 +45,7 @@ Class SendMail
   public function send_PhpMAiler(/*$attachmentX*/) 
   {
 
+       
        // Start PhpMAiler ******************************************************
        require_once("../Library/PHPMailer-master/class.phpmailer.php"); // Class
 
@@ -81,11 +82,14 @@ Class SendMail
 		
        //sending;
        if(!$mail->Send()){
+		   $mailResult = "Mail sending Failed";
            //echo "Message was not sent";
            //echo "Mailer Error: " . $mailer->ErrorInfo;
        } else {
 		   //echo"<center><p id='phpMailerTextDestroyer'>Message  is  send</p></center>";
+		   $mailResult = "Mail was sent";
 	   }
+	   echo json_encode($mailResult);
 	//}
 }
 // **                                                                                  **
