@@ -778,6 +778,8 @@ function myValidate(thisX, id, regExp, butttonToDisable,  message, e)  //{e} -. 
 					//add_ticket_to_Cookies();
 					//sendAjax_to_count_cookieBusket_quanity(); //renew the quantity in round icon/badge(js/cookie_server.js)
 					add_ticket_Local_Storage(data);
+					//alert("Mail is " + data.mailResult);
+					//sendMail_with_PDF();  //!!!!!!!!!!!!!!!!!!!!!!!!!TURNED OFF MAILING
 				} else {
 					alert("Buy_Ticket.php CRASHED!!!! data.Status == FAIL ");
 					$("#err").append("<br>Buy_Ticket.php CRASHED!!!! data.Status == FAIL "); //instead of alert
@@ -802,6 +804,53 @@ function myValidate(thisX, id, regExp, butttonToDisable,  message, e)  //{e} -. 
 	
 	
 	
+	
+	
+	
+	
+	// sendMail_with_PDF()
+	// **************************************************************************************
+    // **************************************************************************************
+    //                                                                                     ** 
+	function sendMail_with_PDF()
+	{
+			
+		// send  data  to  PHP handler  ************ 
+        $.ajax({
+            url: 'ajax_php/Send_Mail.php',  
+            type: 'POST',
+			dataType: 'json', // without this it returned string(that can be alerted), now it returns object
+			//passing the city
+            data: { 
+			    serverName:  $('#formUserName').val(),  //passes Name
+				serverEmail: $('#formUserEmail').val(),  //passes Name
+				serverDate:        dateUnix,  //passes Unix Date!!!!!!
+				serverDateNormal:  unix_to_normal(dateUnix),  //passes Unix Date!!!!!!
+				serverEvent:       event,  //passes event name
+				serverVenue:       venueZ,  //passes Venue name
+				serverTicketPlace: seatID,  //passes Venue name
+				serverPrice:       priceX,
+				serverStartTime:   startTimeZ,
+
+			},
+            success: function(data) {
+               alert("Mail status-> " + data);
+			   //console.log(data);
+				
+				//$("#agreedAddToSQL").attr("disabled", false); //enable back the button after ajax has finished
+            },  //end success
+			error: function (error) {
+				alert("Mail was not sent!!! An error occured");
+				//$("#status").stop().fadeOut("slow",function(){ $(this).html("<h4 style='color:red;padding:3em;'>ERROR!!! <br> NO Events FOUND</h4>")}).fadeIn(2000);
+            }	
+        });
+                                               
+       //  END AJAXed  part 
+	}
+	
+	// **                                                                                  **
+    // **************************************************************************************
+    // **************************************************************************************
 	
 	
 	
@@ -911,7 +960,7 @@ function myValidate(thisX, id, regExp, butttonToDisable,  message, e)  //{e} -. 
 		   '/' + window.location.pathname.split('/')[1]/* .slice(0,window.location.pathname.lastIndexOf('/')+1)*/  +  //gets the core derictory(i.e concert)
 		   '/ajax_php/myConcert_DownLoad_PDF.php?serverVenue=' + dataG.VenueName + 
 		   '&serverDateNormal=' + dataG.DateNorm +   //date in normal format
-		   '&serverEvent='      + decodeSpecialChars(dataG.EventName) +  //decode any "&"
+		   '&serverEvent='      + decodeSpecialChars(dataG.EventName) +  //decode any "&" to "_"
 		   '&serverName='       + dataG.UserName +  //username
 		   '&serverEmail='      + dataG.UserMail + 
 		   '&serverStartTime='  + dataG.TimeStartt +
@@ -928,7 +977,7 @@ function myValidate(thisX, id, regExp, butttonToDisable,  message, e)  //{e} -. 
 	
 	
 	
-	//USED in {$("#btnPrintPDF").click(function()} to decode spec chars(in this case "&") to some other chars((in this case to "_"))
+	//USED in {$("#btnPrintPDF").click(function()} to decode spec chars(in this case "&") to some other chars((in this case to "_")), i.e "Rom & Roland" to "Rom_Roland"
 	//Used as when we create URL to download PDF with fPDF.php(Classes/Create_PDF_with_QR), event name($_GET['serverEvent']) should not contain "&". Otherwise it cuts "Rom & Roland" to "Dom"
 	// **************************************************************************************
     // **************************************************************************************
