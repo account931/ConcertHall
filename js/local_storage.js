@@ -189,7 +189,21 @@
 							"<div class='col-sm-2 col-xs-3'>" + temporaryTicketsObject[key]['price'] + "</div> " +
 							"<div class='col-sm-2 col-xs-3'>" + temporaryTicketsObject[key]['uuid'] + "</div> " +
 							"<div class='col-sm-2 col-xs-4'>" + "<img crossOrigin='Anonymous' id='' src=" + barCodeLink  + " title=" + temporaryTicketsObject[key]['uuid'] + " alt='barcode' />" + "</div> " +
-						    "<div class='col-sm-1 col-xs-4'>" + "<a href='' class='download_PDF_from_List'>PDF</a>" + "</div> " +
+						    "<div class='col-sm-1 col-xs-4'>" +
+                                //url to download PDF from List							
+							    "<a href='ajax_php/myConcert_DownLoad_PDF.php?serverVenue=" + temporaryTicketsObject[key]['venue'] +
+								           "&serverDateNormal=" + temporaryTicketsObject[key]['datenorm'] +
+										   "&serverEvent="      + temporaryTicketsObject[key]['event'] +
+										   "&serverName="       + temporaryTicketsObject[key]['name']  +
+										   "&serverEmail="      + temporaryTicketsObject[key]['email'] +
+										   "&serverStartTime="  + temporaryTicketsObject[key]['time_start'] +
+										   "&serverTicketPlace="+ temporaryTicketsObject[key]['seat'] +
+										   "&serverPrice="      + temporaryTicketsObject[key]['price'] +
+										   "&serverUUID="      +  temporaryTicketsObject[key]['uuid'] +
+									
+								"' class='download_PDF_from_List'>PDF  <i class='fa fa-arrow-circle-down' style='font-size:24px'></i></a>" + 
+								//End url to download PDF from List
+							"</div> " +
 						"</div><hr></br></br>";
 		}
 		finalText = finalText + "<p id='deleteLocStorage'>Delete history</p>" +
