@@ -5,7 +5,7 @@ include 'Classes/autoload.php';//uses autoload instead of manual includin each c
 //$n->setCookie();
 //MyCookie::setCookie(); //setting Cookie if not set 
 
-date_default_timezone_set("Europe/Kiev"); //mega Fix to fix Error in UnixStamp Diffrenece on LocalHost and Server(local was Moscow, server zzz - Kyiv)
+date_default_timezone_set("UTC"); //mega Fix to fix Error in UnixStamp Diffrenece on LocalHost and Server(local was Moscow, server zzz - Kyiv)
 
 $testEventForeveryDay = new Auto_Add_Event_Every_Day(); 
 $testEventForeveryDay->addTestEvent();        //Auto Adds INSERT events for every current day, just for test
@@ -328,12 +328,39 @@ echo $timeZone->getName();
 
                       </div>
                    </div>
-      <!-----------------  END Modal window with Cookies---------------------------->
+                   <!-----------------  END Modal window with Cookies---------------------------->
 				  
 				  
 				  
 				  
 				  
+				  
+				  
+				   <!-- SMALL  Modal with found events on load, instead of alert -->
+                   <div class="modal fade" id="myModalEvents" role="dialog">
+                       <div class="modal-dialog modal-lg">
+                           <div class="modal-content">
+                               <div class="modal-header">
+                                   <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                        <h4 class="modal-title">Events found</h4>
+                                </div>
+                                <div class="modal-body" id="modEvents">
+                                     
+                                </div>
+                               <div class="modal-footer">
+                                   <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                               </div>
+                           </div>
+                        </div>
+                   </div>
+	               <!-- END SMALL  Modal with found events on load, instead of alert -->			  
+				  
+				  
+				  
+				   
+				   
+				   
+				   
 				   
 				  
 		
