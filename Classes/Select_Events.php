@@ -10,6 +10,7 @@ class Select_Events  {
     //                                                                                     **  
     public function select_Events_Values($unix) {  //$unix == today Unixstamp
 		global $conn; // global from $singeltone=ConnectDB::getInstance();
+		date_default_timezone_set('UTC');  //use ('UTC') to avoid -1 day result 
 		//$singeltone=ConnectDB::getInstance(); //creates connection $con;  //was deactivated in index.php
         //$hall_ID=$_POST['serverHall_Id'];  // Hall ID
         try {        
